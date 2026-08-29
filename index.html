@@ -992,78 +992,148 @@ a {
   box-shadow: var(--shadow-sm);
 }
 
-/* Timetable Grid */
-.timetable-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  overflow-x: auto;
-  min-width: 780px;
-}
-
-.timetable-col {
+/* Timetable Matrix Grid */
+.timetable-matrix-container {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  display: flex;
-  flex-direction: column;
-  min-height: 420px;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+  margin-bottom: 24px;
 }
 
-.timetable-col-header {
-  padding: 10px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 0.82rem;
+.timetable-matrix {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.timetable-matrix th, .timetable-matrix td {
+  border: 1px solid var(--border);
+}
+
+.tt-time-head {
+  width: 85px;
   background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 12px 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 10;
 }
 
-.timetable-col-header.is-today {
+.tt-day-head {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--bg);
+  color: var(--text-main);
+  width: 13.5%;
+}
+
+.tt-day-head.is-today {
   background: var(--primary-light);
   color: var(--primary);
+  border-bottom: 2px solid var(--primary);
 }
 
-.timetable-col-body {
-  padding: 8px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.timetable-card {
+.tt-time-cell {
   background: var(--bg);
-  border: 1px solid var(--border);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 8px 4px;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.tt-slot-cell {
+  vertical-align: top;
+  padding: 5px;
+  height: 68px;
+  background: var(--card-bg);
+  transition: background-color 0.15s ease;
+}
+
+.tt-slot-cell.is-today {
+  background: rgba(79, 70, 229, 0.02);
+}
+
+.tt-slot-cell:hover {
+  background: var(--bg);
+}
+
+.tt-block {
+  background: var(--primary-light);
   border-left: 3px solid var(--primary);
   border-radius: var(--radius-sm);
-  padding: 8px;
-  font-size: 0.76rem;
+  padding: 6px 8px;
+  margin-bottom: 4px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.timetable-card:hover {
-  border-color: var(--primary);
-  transform: translateY(-1px);
+.tt-block:hover {
+  transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
-.tt-name {
+.tt-block-name {
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.tt-sub {
+.tt-block-sub {
+  font-size: 0.7rem;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.tt-time {
+.tt-block-time {
+  font-size: 0.68rem;
+  font-weight: 700;
   color: var(--primary);
-  font-weight: 600;
-  margin-top: 4px;
+  margin-top: 2px;
+}
+
+.tt-empty-hover {
+  height: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  border: 1px dashed transparent;
+  transition: all 0.15s ease;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.tt-slot-cell:hover .tt-empty-hover {
+  opacity: 1;
+  border-color: var(--border-focus);
+  background: rgba(99, 102, 241, 0.06);
 }
 
 /* Modals */
@@ -2002,7 +2072,7 @@ const App = {
   },
 
   // ==========================================
-  // PAGE 3: WEEKLY TIMETABLE GRID
+  // PAGE 3: WEEKLY TIMETABLE MATRIX
   // ==========================================
   async renderTimetable(root) {
     const students = await DB.getAll('students');
@@ -2014,63 +2084,106 @@ const App = {
     const schedMap = new Map(schedules.map(sc => [sc.id, sc]));
 
     const todayDOW = new Date().getDay();
+    const activeRules = scheduleDays.filter(d => studentMap.has(d.studentId));
 
-    // Group rules by day
-    const daysColumns = [0, 1, 2, 3, 4, 5, 6].map(dow => {
-      const rules = scheduleDays.filter(d => d.dayOfWeek === dow && studentMap.has(d.studentId));
-      rules.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+    // Dynamic hour range calculation (default 8:00 AM to 9:00 PM or bounded by classes)
+    let minHour = 8;
+    let maxHour = 21;
 
-      return {
-        dow,
-        name: this.daysOfWeek[dow],
-        shortName: this.daysShort[dow],
-        isToday: dow === todayDOW,
-        rules
-      };
+    activeRules.forEach(r => {
+      if (r.startTime) {
+        const h = parseInt(r.startTime.split(':')[0], 10);
+        if (!isNaN(h)) {
+          if (h < minHour) minHour = Math.max(6, h);
+          if (h >= maxHour) maxHour = Math.min(23, h + 1);
+        }
+      }
     });
+
+    const hours = [];
+    for (let h = minHour; h <= maxHour; h++) {
+      hours.push(h);
+    }
+
+    // Build horizontal rows for each hour
+    const rowsHTML = hours.map(hour => {
+      const timeLabel = this.formatTime(`${String(hour).padStart(2, '0')}:00`);
+
+      const daysCells = [0, 1, 2, 3, 4, 5, 6].map(dow => {
+        const cellRules = activeRules.filter(r => {
+          if (r.dayOfWeek !== dow) return false;
+          const rHour = parseInt(r.startTime.split(':')[0], 10);
+          return rHour === hour;
+        });
+
+        const isToday = dow === todayDOW;
+
+        if (cellRules.length === 0) {
+          return `
+            <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
+              <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${String(hour).padStart(2, '0')}:00', ${dow})" title="Click to log a class at ${timeLabel} on ${this.daysOfWeek[dow]}">
+                +
+              </div>
+            </td>
+          `;
+        }
+
+        const cardsHTML = cellRules.map(r => {
+          const student = studentMap.get(r.studentId);
+          const sched = schedMap.get(r.scheduleId);
+          return `
+            <div class="tt-block" onclick="App.navigate('student', { id: ${student.id} })" title="Open ${this.escapeHTML(student.name)}">
+              <div class="tt-block-name">${this.escapeHTML(student.name)}</div>
+              <div class="tt-block-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}${sched && sched.location ? ` • 📍 ${this.escapeHTML(sched.location)}` : ''}</div>
+              <div class="tt-block-time">⏰ ${this.formatTime(r.startTime)} - ${this.formatTime(r.endTime)}</div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
+            ${cardsHTML}
+          </td>
+        `;
+      }).join('');
+
+      return `
+        <tr>
+          <td class="tt-time-cell">${timeLabel}</td>
+          ${daysCells.join('')}
+        </tr>
+      `;
+    }).join('');
 
     root.innerHTML = `
       <div class="page-header">
         <div class="page-header-titles">
           <h1 class="page-title">Weekly Timetable</h1>
-          <div class="page-desc">Visual master schedule across all active students</div>
+          <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
         </div>
         <div class="header-actions">
-          <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Log Class</button>
+          <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
           <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
         </div>
       </div>
 
-      <div style="overflow-x: auto; padding-bottom: 16px;">
-        <div class="timetable-grid">
-          ${daysColumns.map(col => `
-            <div class="timetable-col">
-              <div class="timetable-col-header ${col.isToday ? 'is-today' : ''}">
-                <div>${col.shortName}</div>
-                <div style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">${col.rules.length} classes</div>
-              </div>
-
-              <div class="timetable-col-body">
-                ${col.rules.length === 0 ? `
-                  <div style="text-align:center; padding: 20px 0; color:var(--text-muted); font-size:0.75rem;">
-                    Free Day
-                  </div>
-                ` : col.rules.map(r => {
-                  const student = studentMap.get(r.studentId);
-                  const sched = schedMap.get(r.scheduleId);
-                  return `
-                    <div class="timetable-card" onclick="App.navigate('student', { id: ${student.id} })">
-                      <div class="tt-name">${this.escapeHTML(student.name)}</div>
-                      <div class="tt-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}</div>
-                      <div class="tt-time">⏰ ${this.formatTime(r.startTime)} - ${this.formatTime(r.endTime)}</div>
-                      ${sched && sched.location ? `<div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">📍 ${this.escapeHTML(sched.location)}</div>` : ''}
-                    </div>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-          `).join('')}
-        </div>
+      <div class="timetable-matrix-container">
+        <table class="timetable-matrix">
+          <thead>
+            <tr>
+              <th class="tt-time-head">Time</th>
+              ${this.daysOfWeek.map((name, dow) => `
+                <th class="tt-day-head ${dow === todayDOW ? 'is-today' : ''}">
+                  <div>${this.daysShort[dow]}</div>
+                  <div style="font-size:0.68rem; font-weight:normal; color:var(--text-muted);">${activeRules.filter(r => r.dayOfWeek === dow).length} classes</div>
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
       </div>
     `;
   },
@@ -3116,10 +3229,25 @@ const App = {
   },
 
   // Log Extra / Ad-hoc Class Session Modal
-  async openAddAdHocSessionModal(prefillStudentId = null) {
+  async openAddAdHocSessionModal(prefillStudentId = null, prefillTime = null, prefillDOW = null) {
     const students = await DB.getAll('students');
     const active = students.filter(s => s.status === 'active');
-    const today = this.getTodayDateString();
+    
+    // Calculate date for prefillDOW if provided
+    let defaultDate = this.getTodayDateString();
+    if (prefillDOW !== null && prefillDOW !== undefined) {
+      const now = new Date();
+      const currentDOW = now.getDay();
+      let diff = prefillDOW - currentDOW;
+      if (diff < 0) diff += 7;
+      const targetDate = new Date(now.getTime() + diff * 24 * 60 * 60 * 1000);
+      defaultDate = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
+    }
+
+    const startTime = prefillTime || '17:00';
+    const [h, m] = startTime.split(':').map(Number);
+    const endH = (h + 1) % 24;
+    const endTime = `${String(endH).padStart(2, '0')}:${String(m || 0).padStart(2, '0')}`;
 
     const formHTML = `
       <div class="form-group">
@@ -3132,22 +3260,22 @@ const App = {
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Date *</label>
-          <input type="date" class="form-input" id="inp-adhoc-date" required value="${today}">
+          <input type="date" class="form-input" id="inp-adhoc-date" required value="${defaultDate}">
         </div>
         <div class="form-group">
-          <label class="form-label">Subject</label>
-          <input type="text" class="form-input" id="inp-adhoc-subject" placeholder="e.g. Exam Revision">
+          <label class="form-label">Subject / Title</label>
+          <input type="text" class="form-input" id="inp-adhoc-subject" placeholder="e.g. Exam Revision / Class">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Start Time *</label>
-          <input type="time" class="form-input" id="inp-adhoc-start" required value="17:00">
+          <input type="time" class="form-input" id="inp-adhoc-start" required value="${startTime}">
         </div>
         <div class="form-group">
           <label class="form-label">End Time *</label>
-          <input type="time" class="form-input" id="inp-adhoc-end" required value="18:00">
+          <input type="time" class="form-input" id="inp-adhoc-end" required value="${endTime}">
         </div>
       </div>
 
