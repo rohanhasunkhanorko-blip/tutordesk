@@ -1621,9 +1621,11 @@ const App = {
     const savedTheme = localStorage.getItem('tutordesk_theme') || 'light';
     this.setTheme(savedTheme);
 
-    // Register Service Worker for PWA
+    // Register Service Worker for PWA (Network First)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration error:', err));
+      navigator.serviceWorker.register('./sw.js?v=2').then(reg => {
+        reg.update();
+      }).catch(err => console.log('SW error:', err));
     }
 
     await this.syncTodaySessions();
