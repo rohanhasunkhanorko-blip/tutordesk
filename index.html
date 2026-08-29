@@ -1,0 +1,3840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="TutorDesk - 100% Offline Personal Tutoring Management Application">
+<meta name="theme-color" content="#4f46e5">
+<link rel="manifest" href="manifest.json">
+<title>TutorDesk — Offline Tutor Manager</title>
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --primary-subtle: #c7d2fe;
+  --success: #059669;
+  --success-light: #d1fae5;
+  --success-border: #a7f3d0;
+  --warning: #d97706;
+  --warning-light: #fef3c7;
+  --warning-border: #fde68a;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --danger-border: #fecaca;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --sidebar-bg: #0f172a;
+  --sidebar-text: #94a3b8;
+  --sidebar-hover: rgba(255, 255, 255, 0.08);
+  --sidebar-active: #4f46e5;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --border: #e2e8f0;
+  --border-focus: #818cf8;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --sidebar-width: 250px;
+  --bottom-nav-height: 64px;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f19;
+  --card-bg: #131b2e;
+  --sidebar-bg: #070a12;
+  --sidebar-text: #94a3b8;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --border: #1e293b;
+  --border-focus: #6366f1;
+  --primary-light: rgba(79, 70, 229, 0.2);
+  --primary-subtle: rgba(79, 70, 229, 0.35);
+  --success-light: rgba(5, 150, 105, 0.2);
+  --warning-light: rgba(217, 119, 6, 0.2);
+  --danger-light: rgba(220, 38, 38, 0.2);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.45);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Layout */
+#app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+#sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.2s ease;
+}
+
+.brand-header {
+  padding: 22px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+}
+
+.brand-title {
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.brand-title span {
+  color: #818cf8;
+}
+
+.brand-tag {
+  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  color: var(--sidebar-text);
+  font-weight: 500;
+  font-size: 0.92rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nav-link:hover {
+  background: var(--sidebar-hover);
+  color: #fff;
+}
+
+.nav-link.active {
+  background: var(--sidebar-active);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+.nav-link-icon {
+  font-size: 1.15rem;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.offline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.offline-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+#main-content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  min-height: 100vh;
+  padding: 28px 32px 80px;
+  max-width: 1100px;
+}
+
+/* Mobile Bottom Navigation */
+#bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-height);
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  z-index: 60;
+  padding: 0 4px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bnav-item.active {
+  color: var(--primary);
+}
+
+.bnav-item .bnav-icon {
+  font-size: 1.15rem;
+}
+
+/* Page Header & Common Elements */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.page-header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-pretitle {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.page-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+}
+
+.page-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Cards & Surface */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Stat Grid */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.stat-value.success { color: var(--success); }
+.stat-value.warning { color: var(--warning); }
+.stat-value.danger { color: var(--danger); }
+.stat-value.primary { color: var(--primary); }
+
+.stat-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Class Session Cards (Today Page) */
+.session-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--border);
+  transition: all 0.18s ease;
+}
+
+.session-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.session-card.status-present {
+  border-left-color: var(--success);
+}
+
+.session-card.status-absent {
+  border-left-color: var(--danger);
+}
+
+.session-card.status-cancelled {
+  border-left-color: var(--text-subtle);
+  opacity: 0.75;
+}
+
+.session-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.session-time-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.session-name {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.session-name:hover {
+  color: var(--primary);
+}
+
+.session-subject {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.session-loc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.session-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.att-btn-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.att-btn {
+  padding: 6px 13px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.att-btn:hover {
+  border-color: var(--border-focus);
+}
+
+.att-btn.present.active {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+}
+
+.att-btn.absent.active {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+}
+
+.att-btn.cancelled.active {
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+  color: #fff;
+}
+
+/* Student Cards (Students Page) */
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+}
+
+.student-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.student-card:hover {
+  border-color: var(--primary-subtle);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.st-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.st-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-subtle));
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.st-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.st-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-grade {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.st-subjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.subject-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.st-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+
+.st-fee {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.st-next-class {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.76rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-paid { background: var(--success-light); color: var(--success); }
+.badge-partial { background: var(--warning-light); color: var(--warning); }
+.badge-due { background: var(--danger-light); color: var(--danger); }
+.badge-active { background: var(--success-light); color: var(--success); }
+.badge-archived { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+.badge-pending { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+.btn-secondary {
+  background: var(--card-bg);
+  border-color: var(--border);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: var(--bg);
+  border-color: var(--border-focus);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-icon:hover {
+  background: var(--bg);
+  color: var(--text-main);
+  border-color: var(--border-focus);
+}
+
+/* Floating Action Button */
+.fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45);
+  cursor: pointer;
+  z-index: 45;
+  transition: transform 0.2s ease, background 0.15s ease;
+}
+
+.fab:hover {
+  transform: scale(1.06);
+  background: var(--primary-hover);
+}
+
+/* Tabs */
+.tabs-nav {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-link {
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.tab-link:hover {
+  color: var(--text-main);
+}
+
+.tab-link.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.form-label .opt {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  color: var(--text-main);
+  font-size: 0.88rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+/* Day Selector Checkboxes */
+.day-selector-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.day-pill {
+  position: relative;
+}
+
+.day-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.day-pill-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.day-pill input:checked + .day-pill-label {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(79, 70, 229, 0.35);
+}
+
+/* Search Bar */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease;
+}
+
+.search-container:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.search-icon {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+/* Syllabus & Progress */
+.progress-container {
+  background: var(--border);
+  border-radius: var(--radius-full);
+  height: 9px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #6366f1, #10b981);
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.topic-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.topic-row:last-child {
+  border-bottom: none;
+}
+
+.topic-cycle-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.topic-cycle-btn.completed {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+
+.topic-cycle-btn.in_progress {
+  background: var(--warning-light);
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.topic-text {
+  flex: 1;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.topic-text.completed {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* Payments Table/List */
+.payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.payment-row:hover {
+  border-color: var(--primary-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Timetable Grid */
+.timetable-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  overflow-x: auto;
+  min-width: 780px;
+}
+
+.timetable-col {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+.timetable-col-header {
+  padding: 10px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.timetable-col-header.is-today {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.timetable-col-body {
+  padding: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timetable-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.timetable-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.tt-name {
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.tt-sub {
+  color: var(--text-muted);
+}
+
+.tt-time {
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Modals */
+#modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#modal-backdrop.open {
+  display: block;
+  opacity: 1;
+}
+
+#modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: min(580px, calc(100vw - 32px));
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 101;
+  display: none;
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#modal-container.open {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  padding: 20px 22px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+.modal-close-btn:hover {
+  color: var(--text-main);
+  background: var(--bg);
+}
+
+.modal-body {
+  padding: 20px 22px;
+}
+
+.modal-footer {
+  padding: 14px 22px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* Printable Receipt & Report Styles */
+.printable-doc {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  font-family: var(--font-family);
+}
+
+.receipt-header {
+  text-align: center;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.receipt-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.receipt-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+.receipt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-size: 0.88rem;
+}
+
+.receipt-amount-box {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius);
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: #0f172a;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.25s ease;
+  pointer-events: auto;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.error { background: #b91c1c; }
+.toast.success { background: #065f46; }
+
+/* Empty States */
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.empty-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.empty-desc {
+  font-size: 0.88rem;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Print Rules */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-area, #printable-area * {
+    visibility: visible;
+  }
+  #printable-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    border: none;
+  }
+  #modal-backdrop, #modal-container, #sidebar, #bottom-nav, .modal-footer, .header-actions, .fab {
+    display: none !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #sidebar {
+    display: none;
+  }
+  #main-content {
+    margin-left: 0;
+    padding: 18px 16px calc(var(--bottom-nav-height) + 24px);
+  }
+  #bottom-nav {
+    display: flex;
+  }
+  .fab {
+    bottom: calc(var(--bottom-nav-height) + 16px);
+    right: 18px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="app-layout">
+  <!-- Desktop Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="brand-header">
+      <div class="brand-icon">📚</div>
+      <div>
+        <div class="brand-title">Tutor<span>Desk</span></div>
+        <div class="brand-tag">Offline App</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-link active" data-page="today" onclick="App.navigate('today')">
+        <span class="nav-link-icon">📅</span>
+        <span>Today</span>
+      </div>
+      <div class="nav-link" data-page="students" onclick="App.navigate('students')">
+        <span class="nav-link-icon">👥</span>
+        <span>Students</span>
+      </div>
+      <div class="nav-link" data-page="timetable" onclick="App.navigate('timetable')">
+        <span class="nav-link-icon">🗓️</span>
+        <span>Timetable</span>
+      </div>
+      <div class="nav-link" data-page="payments" onclick="App.navigate('payments')">
+        <span class="nav-link-icon">💳</span>
+        <span>Payments</span>
+      </div>
+      <div class="nav-link" data-page="settings" onclick="App.navigate('settings')">
+        <span class="nav-link-icon">⚙️</span>
+        <span>Settings</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="offline-badge">
+        <span class="offline-dot"></span>
+        100% Local
+      </span>
+      <button class="btn-icon" style="background:transparent; border:none; color:#94a3b8; font-size:1.1rem;" onclick="App.toggleTheme()" title="Toggle Dark/Light Mode">
+        <span id="theme-icon-sidebar">🌙</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Area -->
+  <main id="main-content">
+    <!-- Dynamic page renders here -->
+    <div id="view-root"></div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav id="bottom-nav">
+    <button class="bnav-item active" data-page="today" onclick="App.navigate('today')">
+      <span class="bnav-icon">📅</span>
+      <span>Today</span>
+    </button>
+    <button class="bnav-item" data-page="students" onclick="App.navigate('students')">
+      <span class="bnav-icon">👥</span>
+      <span>Students</span>
+    </button>
+    <button class="bnav-item" data-page="timetable" onclick="App.navigate('timetable')">
+      <span class="bnav-icon">🗓️</span>
+      <span>Timetable</span>
+    </button>
+    <button class="bnav-item" data-page="payments" onclick="App.navigate('payments')">
+      <span class="bnav-icon">💳</span>
+      <span>Payments</span>
+    </button>
+    <button class="bnav-item" data-page="settings" onclick="App.navigate('settings')">
+      <span class="bnav-icon">⚙️</span>
+      <span>Settings</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Modal Container & Backdrop -->
+<div id="modal-backdrop" onclick="App.closeModal()"></div>
+<div id="modal-container">
+  <div id="modal-inner"></div>
+</div>
+
+<!-- Toast Notifications Container -->
+<div id="toast-container"></div>
+
+<!-- Hidden File Input for Backup Restore -->
+<input type="file" id="backup-file-input" style="display: none;" accept=".json" onchange="App.handleBackupRestore(event)">
+
+<script>
+/**
+ * TutorDesk — 100% Offline Personal Tutor Management Application
+ * Complete local client-side IndexedDB architecture.
+ */
+
+// --- 1. LOCAL DATABASE LAYER (IndexedDB) ---
+const DB = {
+  name: 'TutorDesk_DB',
+  version: 1,
+  db: null,
+
+  async init() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.name, this.version);
+
+      request.onerror = (e) => reject('Database error: ' + e.target.error);
+
+      request.onsuccess = (e) => {
+        this.db = e.target.result;
+        resolve(this.db);
+      };
+
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+
+        if (!db.objectStoreNames.contains('students')) {
+          const store = db.createObjectStore('students', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('status', 'status', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('schedules')) {
+          const store = db.createObjectStore('schedules', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('studentId', 'studentId', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('schedule_days')) {
+          const store = db.createObjectStore('schedule_days', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('scheduleId', 'scheduleId', { unique: false });
+          store.createIndex('studentId', 'studentId', { unique: false });
+          store.createIndex('dayOfWeek', 'dayOfWeek', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('class_sessions')) {
+          const store = db.createObjectStore('class_sessions', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('studentId', 'studentId', { unique: false });
+          store.createIndex('date', 'date', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('syllabus_topics')) {
+          const store = db.createObjectStore('syllabus_topics', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('studentId', 'studentId', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('payments')) {
+          const store = db.createObjectStore('payments', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('studentId', 'studentId', { unique: false });
+          store.createIndex('paymentMonth', 'paymentMonth', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('student_notes')) {
+          const store = db.createObjectStore('student_notes', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('studentId', 'studentId', { unique: false });
+        }
+      };
+    });
+  },
+
+  getAll(storeName) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readonly');
+      const store = tx.objectStore(storeName);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  get(storeName, key) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readonly');
+      const store = tx.objectStore(storeName);
+      const req = store.get(Number(key));
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  getByIndex(storeName, indexName, value) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readonly');
+      const store = tx.objectStore(storeName);
+      const index = store.index(indexName);
+      const req = index.getAll(value);
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  add(storeName, item) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      const req = store.add(item);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  put(storeName, item) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      const req = store.put(item);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  delete(storeName, key) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      const req = store.delete(Number(key));
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  clear(storeName) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      const req = store.clear();
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+};
+
+// --- 2. CORE APPLICATION STATE & LOGIC ---
+const App = {
+  currentPage: 'today',
+  currentStudentId: null,
+  currentStudentTab: 'overview',
+  currentPaymentMonth: '',
+  searchQuery: '',
+  showArchived: false,
+  currency: '৳',
+  theme: 'light',
+  daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+
+  async init() {
+    await DB.init();
+    
+    const now = new Date();
+    this.currentPaymentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    
+    // Preferences
+    const savedCurrency = localStorage.getItem('tutordesk_currency');
+    if (savedCurrency) this.currency = savedCurrency;
+
+    const savedTheme = localStorage.getItem('tutordesk_theme') || 'light';
+    this.setTheme(savedTheme);
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration error:', err));
+    }
+
+    await this.syncTodaySessions();
+    this.handleRouting();
+    window.addEventListener('hashchange', () => this.handleRouting());
+  },
+
+  setTheme(theme) {
+    this.theme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('tutordesk_theme', theme);
+    const icon = document.getElementById('theme-icon-sidebar');
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  },
+
+  toggleTheme() {
+    this.setTheme(this.theme === 'dark' ? 'light' : 'dark');
+  },
+
+  handleRouting() {
+    const hash = window.location.hash.slice(1) || 'today';
+    const parts = hash.split('/');
+    const page = parts[0] || 'today';
+    
+    if (page === 'student' && parts[1]) {
+      this.currentStudentId = Number(parts[1]);
+      this.currentStudentTab = parts[2] || 'overview';
+      this.renderStudentProfile();
+    } else {
+      this.currentPage = page;
+      this.render();
+    }
+    this.updateNavHighlight();
+  },
+
+  navigate(page, params = {}) {
+    if (page === 'student') {
+      const tab = params.tab || 'overview';
+      window.location.hash = `student/${params.id}/${tab}`;
+    } else {
+      window.location.hash = page;
+    }
+  },
+
+  updateNavHighlight() {
+    const activePage = this.currentStudentId ? 'students' : this.currentPage;
+    document.querySelectorAll('.nav-link, .bnav-item').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-page') === activePage);
+    });
+  },
+
+  formatCurrency(val) {
+    const num = Number(val) || 0;
+    return `${this.currency}${num.toLocaleString()}`;
+  },
+
+  formatTime(timeStr) {
+    if (!timeStr) return '';
+    const [h, m] = timeStr.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour = h % 12 || 12;
+    return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+  },
+
+  formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  },
+
+  formatMonth(ymStr) {
+    if (!ymStr) return '';
+    const [year, month] = ymStr.split('-').map(Number);
+    const d = new Date(year, month - 1, 1);
+    return d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  },
+
+  getTodayDateString() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  },
+
+  getInitials(name) {
+    if (!name) return '?';
+    return name.trim().split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  },
+
+  toast(message, type = 'normal') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 2800);
+  },
+
+  async syncTodaySessions() {
+    const todayStr = this.getTodayDateString();
+    const todayDOW = new Date().getDay();
+
+    const recurringDays = await DB.getByIndex('schedule_days', 'dayOfWeek', todayDOW);
+    const existingSessions = await DB.getByIndex('class_sessions', 'date', todayStr);
+
+    for (const rule of recurringDays) {
+      const exists = existingSessions.some(s => s.scheduleDayId === rule.id);
+      if (!exists) {
+        const student = await DB.get('students', rule.studentId);
+        if (student && student.status === 'active') {
+          const schedule = await DB.get('schedules', rule.scheduleId);
+          await DB.add('class_sessions', {
+            studentId: rule.studentId,
+            scheduleId: rule.scheduleId,
+            scheduleDayId: rule.id,
+            date: todayStr,
+            dayOfWeek: todayDOW,
+            startTime: rule.startTime,
+            endTime: rule.endTime,
+            subjectName: schedule ? schedule.subjectName : 'General',
+            location: schedule ? schedule.location : (student.address || ''),
+            attendance: 'pending',
+            createdAt: new Date().toISOString()
+          });
+        }
+      }
+    }
+  },
+
+  async calculateNextClass(studentId) {
+    const todayDOW = new Date().getDay();
+    const scheduleDays = await DB.getByIndex('schedule_days', 'studentId', studentId);
+    if (!scheduleDays || scheduleDays.length === 0) return null;
+
+    let closestDiff = 999;
+    let closestRule = null;
+
+    for (const rule of scheduleDays) {
+      let diff = rule.dayOfWeek - todayDOW;
+      if (diff < 0) diff += 7;
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closestRule = rule;
+      }
+    }
+
+    if (!closestRule) return null;
+    let dayLabel = this.daysShort[closestRule.dayOfWeek];
+    if (closestDiff === 0) dayLabel = 'Today';
+    else if (closestDiff === 1) dayLabel = 'Tomorrow';
+
+    return `${dayLabel} — ${this.formatTime(closestRule.startTime)}`;
+  },
+
+  // --- MAIN RENDER ---
+  async render() {
+    const root = document.getElementById('view-root');
+    this.currentStudentId = null;
+
+    switch (this.currentPage) {
+      case 'today':
+        await this.renderToday(root);
+        break;
+      case 'students':
+        await this.renderStudents(root);
+        break;
+      case 'timetable':
+        await this.renderTimetable(root);
+        break;
+      case 'payments':
+        await this.renderPayments(root);
+        break;
+      case 'settings':
+        await this.renderSettings(root);
+        break;
+      default:
+        await this.renderToday(root);
+    }
+  },
+
+  // ==========================================
+  // PAGE 1: TODAY PAGE
+  // ==========================================
+  async renderToday(root) {
+    const todayStr = this.getTodayDateString();
+    const todayObj = new Date();
+    const dayName = this.daysOfWeek[todayObj.getDay()];
+    const dateFormatted = this.formatDate(todayStr);
+
+    await this.syncTodaySessions();
+    const sessions = await DB.getByIndex('class_sessions', 'date', todayStr);
+    sessions.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+    const students = await DB.getAll('students');
+    const activeStudents = students.filter(s => s.status === 'active');
+
+    const payments = await DB.getByIndex('payments', 'paymentMonth', this.currentPaymentMonth);
+    const totalCollectedMonth = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const totalExpectedMonth = activeStudents.reduce((sum, s) => sum + (Number(s.monthlyFee) || 0), 0);
+    const totalDueMonth = Math.max(0, totalExpectedMonth - totalCollectedMonth);
+
+    const studentMap = new Map(students.map(s => [s.id, s]));
+
+    let sessionsHTML = '';
+    if (sessions.length === 0) {
+      sessionsHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">☕</div>
+          <div class="empty-title">No classes scheduled for today</div>
+          <p class="empty-desc">Enjoy your free day! You can add students, schedules, or log an extra class session.</p>
+          <div style="display:flex; justify-content:center; gap:8px; margin-top: 18px;">
+            <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+            <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Log Extra Class</button>
+          </div>
+        </div>
+      `;
+    } else {
+      sessionsHTML = sessions.map(session => {
+        const student = studentMap.get(session.studentId);
+        if (!student) return '';
+
+        const isPresent = session.attendance === 'present';
+        const isAbsent = session.attendance === 'absent';
+        const isCancelled = session.attendance === 'cancelled';
+
+        return `
+          <div class="session-card status-${session.attendance}" id="session-card-${session.id}">
+            <div class="session-top">
+              <div>
+                <div class="session-name" onclick="App.navigate('student', { id: ${student.id} })">${this.escapeHTML(student.name)}</div>
+                <div class="session-subject">${this.escapeHTML(session.subjectName || 'Tuition')} ${student.grade ? `• Grade ${this.escapeHTML(student.grade)}` : ''}</div>
+                ${session.location ? `<div class="session-loc">📍 ${this.escapeHTML(session.location)}</div>` : ''}
+              </div>
+              <div class="session-time-badge">
+                ⏰ ${this.formatTime(session.startTime)} — ${this.formatTime(session.endTime)}
+              </div>
+            </div>
+
+            <div class="session-actions">
+              <div class="att-btn-group">
+                <button class="att-btn present ${isPresent ? 'active' : ''}" onclick="App.setAttendance(${session.id}, 'present')">
+                  ✓ Present
+                </button>
+                <button class="att-btn absent ${isAbsent ? 'active' : ''}" onclick="App.setAttendance(${session.id}, 'absent')">
+                  ✕ Absent
+                </button>
+                <button class="att-btn cancelled ${isCancelled ? 'active' : ''}" onclick="App.setAttendance(${session.id}, 'cancelled')">
+                  — Cancelled
+                </button>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                ${student.phone ? `
+                  <a href="tel:${student.phone}" class="btn btn-secondary btn-sm" title="Call Student">
+                    📞 Call
+                  </a>
+                ` : ''}
+                ${session.location ? `
+                  <a href="https://maps.google.com/?q=${encodeURIComponent(session.location)}" target="_blank" class="btn btn-secondary btn-sm" title="Open in Maps">
+                    📍 Location
+                  </a>
+                ` : ''}
+                <button class="btn btn-secondary btn-sm" onclick="App.navigate('student', { id: ${student.id} })">
+                  Student Profile →
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    root.innerHTML = `
+      <div class="page-header">
+        <div class="page-header-titles">
+          <div class="page-pretitle">${dayName}</div>
+          <h1 class="page-title">${dateFormatted}</h1>
+          <div class="page-desc">Daily Schedule & Quick Attendance</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
+          <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label">Today's Classes</span>
+          <span class="stat-value primary">${sessions.length}</span>
+          <span class="stat-sub">${sessions.filter(s => s.attendance === 'present').length} attended so far</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Active Students</span>
+          <span class="stat-value">${activeStudents.length}</span>
+          <span class="stat-sub">Enrolled & Active</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Collected (${this.formatMonth(this.currentPaymentMonth)})</span>
+          <span class="stat-value success">${this.formatCurrency(totalCollectedMonth)}</span>
+          <span class="stat-sub">Due: ${this.formatCurrency(totalDueMonth)}</span>
+        </div>
+      </div>
+
+      <div class="card-header" style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;">
+        <div class="card-title">TODAY'S CLASSES (${sessions.length})</div>
+      </div>
+
+      ${sessionsHTML}
+    `;
+  },
+
+  async setAttendance(sessionId, status) {
+    const session = await DB.get('class_sessions', sessionId);
+    if (!session) return;
+
+    session.attendance = session.attendance === status ? 'pending' : status;
+    await DB.put('class_sessions', session);
+
+    this.toast(`Attendance: ${session.attendance}`);
+    if (this.currentPage === 'today') {
+      this.renderToday(document.getElementById('view-root'));
+    } else if (this.currentStudentId) {
+      this.renderStudentProfile();
+    }
+  },
+
+  // ==========================================
+  // PAGE 2: STUDENTS DIRECTORY
+  // ==========================================
+  async renderStudents(root) {
+    const allStudents = await DB.getAll('students');
+    const query = this.searchQuery.toLowerCase().trim();
+
+    const filtered = allStudents.filter(s => {
+      if (!this.showArchived && s.status === 'archived') return false;
+      if (this.showArchived && s.status !== 'archived') return false;
+
+      if (!query) return true;
+      const subjectsStr = (s.subjects || []).join(' ').toLowerCase();
+      return (s.name || '').toLowerCase().includes(query) ||
+             (s.phone || '').includes(query) ||
+             (s.grade || '').toLowerCase().includes(query) ||
+             subjectsStr.includes(query) ||
+             (s.school || '').toLowerCase().includes(query);
+    });
+
+    filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+    const cardsHTML = await Promise.all(filtered.map(async s => {
+      const nextClass = await this.calculateNextClass(s.id);
+      const subjects = (s.subjects || []);
+
+      return `
+        <div class="student-card" onclick="App.navigate('student', { id: ${s.id} })">
+          <div>
+            <div class="st-card-header">
+              <div class="st-avatar">${this.getInitials(s.name)}</div>
+              <div class="st-info">
+                <div class="st-name">${this.escapeHTML(s.name)}</div>
+                <div class="st-grade">${s.grade ? `Grade ${this.escapeHTML(s.grade)}` : 'Grade not set'} ${s.school ? `• ${this.escapeHTML(s.school)}` : ''}</div>
+              </div>
+            </div>
+
+            <div class="st-subjects">
+              ${subjects.length > 0 ? subjects.map(sub => `<span class="subject-badge">${this.escapeHTML(sub)}</span>`).join('') : '<span style="font-size:0.75rem; color:var(--text-muted);">No subjects set</span>'}
+            </div>
+          </div>
+
+          <div class="st-card-footer">
+            <div class="st-fee">${this.formatCurrency(s.monthlyFee)} <span style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">/mo</span></div>
+            <div class="st-next-class">
+              ${nextClass ? `📅 ${nextClass}` : '<span style="color:var(--text-muted)">No schedule</span>'}
+            </div>
+          </div>
+        </div>
+      `;
+    }));
+
+    root.innerHTML = `
+      <div class="page-header">
+        <div class="page-header-titles">
+          <h1 class="page-title">Students Directory</h1>
+          <div class="page-desc">Manage all enrolled students, schedules, & syllabus</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+        </div>
+      </div>
+
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="student-search-input" 
+               placeholder="Search by student name, phone, class/grade, or subject..." 
+               value="${this.escapeHTML(this.searchQuery)}"
+               oninput="App.onSearch(this.value)">
+        ${this.searchQuery ? `<button class="btn-sm btn-secondary" onclick="App.clearSearch()">Clear</button>` : ''}
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+        <div style="display:flex; gap: 8px;">
+          <button class="btn btn-sm ${!this.showArchived ? 'btn-primary' : 'btn-secondary'}" onclick="App.toggleArchiveFilter(false)">Active (${allStudents.filter(s=>s.status!=='archived').length})</button>
+          <button class="btn btn-sm ${this.showArchived ? 'btn-primary' : 'btn-secondary'}" onclick="App.toggleArchiveFilter(true)">Archived (${allStudents.filter(s=>s.status==='archived').length})</button>
+        </div>
+        <span style="font-size:0.8rem; color:var(--text-muted);">${filtered.length} found</span>
+      </div>
+
+      ${filtered.length === 0 ? `
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <div class="empty-title">${this.searchQuery ? 'No matching students' : (this.showArchived ? 'No archived students' : 'No students added yet')}</div>
+          <p class="empty-desc">${this.searchQuery ? 'Try adjusting your search criteria.' : 'Add your first student to start managing schedules and tuition records.'}</p>
+          ${!this.searchQuery && !this.showArchived ? `<button class="btn btn-primary" style="margin-top:16px;" onclick="App.openAddStudentModal()">+ Add Student</button>` : ''}
+        </div>
+      ` : `
+        <div class="student-grid">
+          ${cardsHTML.join('')}
+        </div>
+      `}
+
+      <button class="fab" onclick="App.openAddStudentModal()" title="Add New Student">＋</button>
+    `;
+  },
+
+  onSearch(val) {
+    this.searchQuery = val;
+    this.renderStudents(document.getElementById('view-root'));
+  },
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.renderStudents(document.getElementById('view-root'));
+  },
+
+  toggleArchiveFilter(show) {
+    this.showArchived = show;
+    this.renderStudents(document.getElementById('view-root'));
+  },
+
+  // ==========================================
+  // PAGE 3: WEEKLY TIMETABLE GRID
+  // ==========================================
+  async renderTimetable(root) {
+    const students = await DB.getAll('students');
+    const activeStudents = students.filter(s => s.status === 'active');
+    const scheduleDays = await DB.getAll('schedule_days');
+    const schedules = await DB.getAll('schedules');
+
+    const studentMap = new Map(activeStudents.map(s => [s.id, s]));
+    const schedMap = new Map(schedules.map(sc => [sc.id, sc]));
+
+    const todayDOW = new Date().getDay();
+
+    // Group rules by day
+    const daysColumns = [0, 1, 2, 3, 4, 5, 6].map(dow => {
+      const rules = scheduleDays.filter(d => d.dayOfWeek === dow && studentMap.has(d.studentId));
+      rules.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+      return {
+        dow,
+        name: this.daysOfWeek[dow],
+        shortName: this.daysShort[dow],
+        isToday: dow === todayDOW,
+        rules
+      };
+    });
+
+    root.innerHTML = `
+      <div class="page-header">
+        <div class="page-header-titles">
+          <h1 class="page-title">Weekly Timetable</h1>
+          <div class="page-desc">Visual master schedule across all active students</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Log Class</button>
+          <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto; padding-bottom: 16px;">
+        <div class="timetable-grid">
+          ${daysColumns.map(col => `
+            <div class="timetable-col">
+              <div class="timetable-col-header ${col.isToday ? 'is-today' : ''}">
+                <div>${col.shortName}</div>
+                <div style="font-size:0.7rem; font-weight:normal; color:var(--text-muted);">${col.rules.length} classes</div>
+              </div>
+
+              <div class="timetable-col-body">
+                ${col.rules.length === 0 ? `
+                  <div style="text-align:center; padding: 20px 0; color:var(--text-muted); font-size:0.75rem;">
+                    Free Day
+                  </div>
+                ` : col.rules.map(r => {
+                  const student = studentMap.get(r.studentId);
+                  const sched = schedMap.get(r.scheduleId);
+                  return `
+                    <div class="timetable-card" onclick="App.navigate('student', { id: ${student.id} })">
+                      <div class="tt-name">${this.escapeHTML(student.name)}</div>
+                      <div class="tt-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}</div>
+                      <div class="tt-time">⏰ ${this.formatTime(r.startTime)} - ${this.formatTime(r.endTime)}</div>
+                      ${sched && sched.location ? `<div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">📍 ${this.escapeHTML(sched.location)}</div>` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  },
+
+  // ==========================================
+  // PAGE 4: STUDENT PROFILE & SUB-TABS
+  // ==========================================
+  async renderStudentProfile() {
+    const root = document.getElementById('view-root');
+    const student = await DB.get('students', this.currentStudentId);
+    if (!student) {
+      this.navigate('students');
+      return;
+    }
+
+    const nextClass = await this.calculateNextClass(student.id);
+
+    root.innerHTML = `
+      <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <button class="btn btn-secondary btn-sm" onclick="App.navigate('students')">← Back to Students</button>
+        <button class="btn btn-secondary btn-sm" onclick="App.openStudentReportModal(${student.id})">📄 Student Report Card</button>
+      </div>
+
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div class="st-avatar" style="width: 58px; height: 58px; font-size: 1.4rem;">
+              ${this.getInitials(student.name)}
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h1 style="font-size: 1.45rem; font-weight: 800;">${this.escapeHTML(student.name)}</h1>
+                <span class="badge ${student.status === 'archived' ? 'badge-archived' : 'badge-active'}">
+                  ${student.status === 'archived' ? 'Archived' : 'Active'}
+                </span>
+              </div>
+              <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
+                ${student.grade ? `Class / Grade ${this.escapeHTML(student.grade)}` : ''} 
+                ${student.school ? `• ${this.escapeHTML(student.school)}` : ''}
+              </div>
+              <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-top: 4px;">
+                ${this.formatCurrency(student.monthlyFee)} <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">/ month</span>
+                ${nextClass ? `<span style="font-weight: normal; color: var(--text-muted); margin-left: 10px;">• Next: <strong>${nextClass}</strong></span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${student.phone ? `<a href="tel:${student.phone}" class="btn btn-secondary btn-sm">📞 Call</a>` : ''}
+            ${student.address ? `<a href="https://maps.google.com/?q=${encodeURIComponent(student.address)}" target="_blank" class="btn btn-secondary btn-sm">📍 Location</a>` : ''}
+            <button class="btn btn-secondary btn-sm" onclick="App.openEditStudentModal(${student.id})">✏️ Edit</button>
+            <button class="btn btn-secondary btn-sm" onclick="App.toggleArchiveStudent(${student.id})">
+              ${student.status === 'archived' ? 'Unarchive' : 'Archive'}
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="App.confirmDeleteStudent(${student.id})">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Tabs -->
+      <div class="tabs-nav">
+        <button class="tab-link ${this.currentStudentTab === 'overview' ? 'active' : ''}" onclick="App.switchStudentTab('overview')">Overview</button>
+        <button class="tab-link ${this.currentStudentTab === 'schedule' ? 'active' : ''}" onclick="App.switchStudentTab('schedule')">Weekly Schedule</button>
+        <button class="tab-link ${this.currentStudentTab === 'syllabus' ? 'active' : ''}" onclick="App.switchStudentTab('syllabus')">Syllabus Progress</button>
+        <button class="tab-link ${this.currentStudentTab === 'payments' ? 'active' : ''}" onclick="App.switchStudentTab('payments')">Payments</button>
+        <button class="tab-link ${this.currentStudentTab === 'attendance' ? 'active' : ''}" onclick="App.switchStudentTab('attendance')">Attendance Logs</button>
+        <button class="tab-link ${this.currentStudentTab === 'notes' ? 'active' : ''}" onclick="App.switchStudentTab('notes')">Notes</button>
+      </div>
+
+      <div id="student-tab-content"></div>
+    `;
+
+    const tabContainer = document.getElementById('student-tab-content');
+    switch (this.currentStudentTab) {
+      case 'overview':
+        await this.renderStudentOverview(student, tabContainer);
+        break;
+      case 'schedule':
+        await this.renderStudentSchedule(student, tabContainer);
+        break;
+      case 'syllabus':
+        await this.renderStudentSyllabus(student, tabContainer);
+        break;
+      case 'payments':
+        await this.renderStudentPayments(student, tabContainer);
+        break;
+      case 'attendance':
+        await this.renderStudentAttendance(student, tabContainer);
+        break;
+      case 'notes':
+        await this.renderStudentNotes(student, tabContainer);
+        break;
+    }
+  },
+
+  switchStudentTab(tab) {
+    this.currentStudentTab = tab;
+    window.location.hash = `student/${this.currentStudentId}/${tab}`;
+  },
+
+  // 1. Student Overview Subtab
+  async renderStudentOverview(student, container) {
+    const scheduleDays = await DB.getByIndex('schedule_days', 'studentId', student.id);
+    const syllabus = await DB.getByIndex('syllabus_topics', 'studentId', student.id);
+    const payments = await DB.getByIndex('payments', 'studentId', student.id);
+
+    const completedTopics = syllabus.filter(t => t.status === 'completed').length;
+    const inProgressTopics = syllabus.filter(t => t.status === 'in_progress').length;
+    const totalTopics = syllabus.length;
+    const progressScore = totalTopics > 0 ? Math.round(((completedTopics * 1.0 + inProgressTopics * 0.5) / totalTopics) * 100) : 0;
+
+    container.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label">Syllabus Completion</span>
+          <span class="stat-value primary">${progressScore}%</span>
+          <span class="stat-sub">${completedTopics}/${totalTopics} topics mastered</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Weekly Classes</span>
+          <span class="stat-value">${scheduleDays.length}</span>
+          <span class="stat-sub">Sessions per week</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total Payments Received</span>
+          <span class="stat-value success">${this.formatCurrency(payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0))}</span>
+          <span class="stat-sub">${payments.length} payment records</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📞 Contact & Personal Details</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+            <div><strong>Student Phone:</strong> ${student.phone ? `<a href="tel:${student.phone}" style="color:var(--primary); font-weight:600;">${this.escapeHTML(student.phone)}</a>` : 'Not specified'}</div>
+            <div><strong>Guardian Name:</strong> ${this.escapeHTML(student.guardianName || 'Not specified')}</div>
+            <div><strong>Guardian Phone:</strong> ${student.guardianPhone ? `<a href="tel:${student.guardianPhone}" style="color:var(--primary); font-weight:600;">${this.escapeHTML(student.guardianPhone)}</a>` : 'Not specified'}</div>
+            <div><strong>Address / Location:</strong> ${this.escapeHTML(student.address || 'Not specified')}</div>
+            <div><strong>School / College:</strong> ${this.escapeHTML(student.school || 'Not specified')}</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📖 Subjects & Tuition Fee</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.88rem;">
+            <div>
+              <div style="margin-bottom: 6px; font-weight: 700;">Subjects:</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                ${(student.subjects && student.subjects.length > 0) ? student.subjects.map(s => `<span class="subject-badge" style="font-size:0.82rem; padding: 4px 10px;">${this.escapeHTML(s)}</span>`).join('') : '<span style="color:var(--text-muted)">No subjects assigned</span>'}
+              </div>
+            </div>
+            <div>
+              <div style="font-weight: 700;">Monthly Fee:</div>
+              <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-main);">${this.formatCurrency(student.monthlyFee)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // 2. Student Weekly Schedule Subtab
+  async renderStudentSchedule(student, container) {
+    const schedules = await DB.getByIndex('schedules', 'studentId', student.id);
+    const scheduleDays = await DB.getByIndex('schedule_days', 'studentId', student.id);
+
+    let schedulesListHTML = '';
+    if (schedules.length === 0) {
+      schedulesListHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <div class="empty-title">No recurring schedule set</div>
+          <p class="empty-desc">Create a weekly schedule with multiple days and flexible class timings.</p>
+          <button class="btn btn-primary" style="margin-top: 14px;" onclick="App.openAddScheduleModal(${student.id})">+ Add Weekly Schedule</button>
+        </div>
+      `;
+    } else {
+      schedulesListHTML = schedules.map(sched => {
+        const days = scheduleDays.filter(d => d.scheduleId === sched.id);
+        days.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+
+        return `
+          <div class="card" style="margin-bottom: 14px;">
+            <div class="card-header">
+              <div>
+                <div class="card-title">${this.escapeHTML(sched.subjectName || 'Tuition Schedule')}</div>
+                ${sched.location ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">📍 Location: ${this.escapeHTML(sched.location)}</div>` : ''}
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="App.openEditScheduleModal(${sched.id})">✏️ Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="App.deleteSchedule(${sched.id})">🗑️ Delete</button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+              ${days.map(d => `
+                <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px;">
+                  <div style="font-weight:700; color:var(--primary); font-size:0.88rem;">${this.daysOfWeek[d.dayOfWeek]}</div>
+                  <div style="font-size:0.82rem; color:var(--text-main); margin-top:2px;">
+                    ⏰ ${this.formatTime(d.startTime)} — ${this.formatTime(d.endTime)}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 800;">Weekly Class Schedules</h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Recurring days and class hours for this student</div>
+        </div>
+        <button class="btn btn-primary" onclick="App.openAddScheduleModal(${student.id})">+ Add Schedule</button>
+      </div>
+
+      ${schedulesListHTML}
+    `;
+  },
+
+  // 3. Student Syllabus Subtab
+  async renderStudentSyllabus(student, container) {
+    const topics = await DB.getByIndex('syllabus_topics', 'studentId', student.id);
+    topics.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    const completed = topics.filter(t => t.status === 'completed').length;
+    const inProgress = topics.filter(t => t.status === 'in_progress').length;
+    const notStarted = topics.filter(t => t.status === 'not_started' || !t.status).length;
+    const total = topics.length;
+    const progressPercent = total > 0 ? Math.round(((completed * 1.0 + inProgress * 0.5) / total) * 100) : 0;
+
+    const subjectGroups = {};
+    topics.forEach(t => {
+      const groupName = t.subjectName || 'General Syllabus';
+      if (!subjectGroups[groupName]) subjectGroups[groupName] = [];
+      subjectGroups[groupName].push(t);
+    });
+
+    let groupsHTML = '';
+    if (total === 0) {
+      groupsHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📝</div>
+          <div class="empty-title">No syllabus topics added yet</div>
+          <p class="empty-desc">Break down student coursework into chapters & track individual mastery.</p>
+          <button class="btn btn-primary" style="margin-top: 14px;" onclick="App.openAddTopicModal(${student.id})">+ Add Topic</button>
+        </div>
+      `;
+    } else {
+      groupsHTML = Object.keys(subjectGroups).map(subject => {
+        const groupTopics = subjectGroups[subject];
+        return `
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="card-header">
+              <div class="card-title">${this.escapeHTML(subject)}</div>
+              <button class="btn btn-secondary btn-sm" onclick="App.openAddTopicModal(${student.id}, '${this.escapeHTML(subject)}')">+ Add Topic</button>
+            </div>
+
+            <div>
+              ${groupTopics.map(topic => {
+                const isCompleted = topic.status === 'completed';
+                const isInProgress = topic.status === 'in_progress';
+
+                let icon = '○';
+                if (isCompleted) icon = '✓';
+                else if (isInProgress) icon = '◐';
+
+                return `
+                  <div class="topic-row">
+                    <button class="topic-cycle-btn ${topic.status || 'not_started'}" 
+                            onclick="App.cycleTopicStatus(${topic.id})"
+                            title="Click to cycle status: Not Started → In Progress → Completed">
+                      ${icon}
+                    </button>
+                    
+                    <div class="topic-text ${isCompleted ? 'completed' : ''}">
+                      ${this.escapeHTML(topic.topic)}
+                    </div>
+
+                    <div style="display: flex; gap: 4px;">
+                      <button class="btn-icon" onclick="App.openEditTopicModal(${topic.id})" title="Edit Topic">✏️</button>
+                      <button class="btn-icon" onclick="App.deleteTopic(${topic.id})" title="Delete Topic">🗑️</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    container.innerHTML = `
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 800; font-size: 1.1rem;">Syllabus Progress</div>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">${completed} completed • ${inProgress} in progress • ${notStarted} not started</div>
+          </div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">${progressPercent}%</div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-fill" style="width: ${progressPercent}%;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+        <h2 style="font-size: 1.05rem; font-weight: 700;">Topics & Chapters</h2>
+        <button class="btn btn-primary btn-sm" onclick="App.openAddTopicModal(${student.id})">+ Add Topic</button>
+      </div>
+
+      ${groupsHTML}
+    `;
+  },
+
+  async cycleTopicStatus(topicId) {
+    const topic = await DB.get('syllabus_topics', topicId);
+    if (!topic) return;
+
+    if (!topic.status || topic.status === 'not_started') {
+      topic.status = 'in_progress';
+    } else if (topic.status === 'in_progress') {
+      topic.status = 'completed';
+    } else {
+      topic.status = 'not_started';
+    }
+
+    await DB.put('syllabus_topics', topic);
+    this.renderStudentProfile();
+  },
+
+  // 4. Student Payments Subtab
+  async renderStudentPayments(student, container) {
+    const payments = await DB.getByIndex('payments', 'studentId', student.id);
+    payments.sort((a, b) => b.paymentDate.localeCompare(a.paymentDate));
+
+    const totalPaid = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+    const paymentsByMonth = {};
+    payments.forEach(p => {
+      const m = p.paymentMonth || 'Unassigned';
+      if (!paymentsByMonth[m]) paymentsByMonth[m] = [];
+      paymentsByMonth[m].push(p);
+    });
+
+    let historyHTML = '';
+    if (payments.length === 0) {
+      historyHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">💳</div>
+          <div class="empty-title">No payment records</div>
+          <p class="empty-desc">Record tuition fees received for this student.</p>
+          <button class="btn btn-primary" style="margin-top: 14px;" onclick="App.openAddPaymentModal(${student.id})">+ Record Payment</button>
+        </div>
+      `;
+    } else {
+      historyHTML = Object.keys(paymentsByMonth).sort().reverse().map(monthStr => {
+        const monthPayments = paymentsByMonth[monthStr];
+        const monthTotal = monthPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+        const fee = Number(student.monthlyFee) || 0;
+        
+        let statusBadge = '<span class="badge badge-paid">✓ Paid</span>';
+        if (monthTotal < fee) {
+          statusBadge = `<span class="badge badge-partial">◐ Partial (${this.formatCurrency(monthTotal)} / ${this.formatCurrency(fee)})</span>`;
+        }
+
+        return `
+          <div class="card" style="margin-bottom: 14px;">
+            <div class="card-header">
+              <div>
+                <div style="font-weight: 800; font-size: 1rem;">${this.formatMonth(monthStr)}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Expected Fee: ${this.formatCurrency(fee)}</div>
+              </div>
+              <div>${statusBadge}</div>
+            </div>
+
+            <div>
+              ${monthPayments.map(p => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px;">
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.95rem; color: var(--success);">${this.formatCurrency(p.amount)}</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">
+                      Received: <strong>${this.formatDate(p.paymentDate)}</strong> ${p.method ? `• ${this.escapeHTML(p.method)}` : ''} ${p.note ? `• <em>"${this.escapeHTML(p.note)}"</em>` : ''}
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-secondary btn-sm" onclick="App.openReceiptModal(${p.id})">🖨️ Receipt</button>
+                    <button class="btn-icon" onclick="App.openEditPaymentModal(${p.id})" title="Edit Payment">✏️</button>
+                    <button class="btn-icon" onclick="App.deletePayment(${p.id})" title="Delete Payment">🗑️</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 800;">Payment History</h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Total collected: <strong>${this.formatCurrency(totalPaid)}</strong></div>
+        </div>
+        <button class="btn btn-primary" onclick="App.openAddPaymentModal(${student.id})">+ Record Payment</button>
+      </div>
+
+      ${historyHTML}
+    `;
+  },
+
+  // 5. Student Attendance Logs Subtab
+  async renderStudentAttendance(student, container) {
+    const sessions = await DB.getByIndex('class_sessions', 'studentId', student.id);
+    sessions.sort((a, b) => b.date.localeCompare(a.date) || b.startTime.localeCompare(a.startTime));
+
+    const totalSessions = sessions.length;
+    const presentCount = sessions.filter(s => s.attendance === 'present').length;
+    const absentCount = sessions.filter(s => s.attendance === 'absent').length;
+    const cancelledCount = sessions.filter(s => s.attendance === 'cancelled').length;
+    const rate = (presentCount + absentCount) > 0 ? Math.round((presentCount / (presentCount + absentCount)) * 100) : 100;
+
+    let listHTML = '';
+    if (sessions.length === 0) {
+      listHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📊</div>
+          <div class="empty-title">No class sessions recorded</div>
+          <p class="empty-desc">Sessions automatically generate on class days, or you can record extra ad-hoc classes.</p>
+          <button class="btn btn-secondary" style="margin-top:14px;" onclick="App.openAddAdHocSessionModal(${student.id})">+ Log Extra Class</button>
+        </div>
+      `;
+    } else {
+      listHTML = sessions.map(s => {
+        let badge = '<span class="badge badge-pending">Pending</span>';
+        if (s.attendance === 'present') badge = '<span class="badge badge-paid">✓ Present</span>';
+        else if (s.attendance === 'absent') badge = '<span class="badge badge-due">✕ Absent</span>';
+        else if (s.attendance === 'cancelled') badge = '<span class="badge badge-archived">— Cancelled</span>';
+
+        return `
+          <div class="payment-row">
+            <div>
+              <div style="font-weight: 700; font-size: 0.92rem;">${this.formatDate(s.date)} — ${this.escapeHTML(s.subjectName || 'Tuition')}</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">
+                ⏰ ${this.formatTime(s.startTime)} — ${this.formatTime(s.endTime)} ${s.location ? `• 📍 ${this.escapeHTML(s.location)}` : ''}
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              ${badge}
+              <div class="att-btn-group">
+                <button class="att-btn present ${s.attendance === 'present' ? 'active' : ''}" onclick="App.setAttendance(${s.id}, 'present')">P</button>
+                <button class="att-btn absent ${s.attendance === 'absent' ? 'active' : ''}" onclick="App.setAttendance(${s.id}, 'absent')">A</button>
+                <button class="att-btn cancelled ${s.attendance === 'cancelled' ? 'active' : ''}" onclick="App.setAttendance(${s.id}, 'cancelled')">C</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    container.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label">Attendance Rate</span>
+          <span class="stat-value success">${rate}%</span>
+          <span class="stat-sub">${presentCount} attended / ${presentCount + absentCount} held</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total Classes Logged</span>
+          <span class="stat-value">${totalSessions}</span>
+          <span class="stat-sub">${cancelledCount} cancelled</span>
+        </div>
+      </div>
+
+      <div class="card-header" style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;">
+        <div class="card-title">CLASS HISTORY (${totalSessions})</div>
+        <button class="btn btn-secondary btn-sm" onclick="App.openAddAdHocSessionModal(${student.id})">+ Extra Class</button>
+      </div>
+
+      ${listHTML}
+    `;
+  },
+
+  // 6. Student Notes Subtab
+  async renderStudentNotes(student, container) {
+    const notes = await DB.getByIndex('student_notes', 'studentId', student.id);
+    notes.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+    let notesHTML = '';
+    if (notes.length === 0) {
+      notesHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📝</div>
+          <div class="empty-title">No notes recorded yet</div>
+          <p class="empty-desc">Keep track of homework assignments, exam scores, learning weaknesses, or parent feedback.</p>
+          <button class="btn btn-primary" style="margin-top: 14px;" onclick="App.openAddNoteModal(${student.id})">+ Add Note</button>
+        </div>
+      `;
+    } else {
+      notesHTML = notes.map(n => `
+        <div class="card" style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">
+              📅 ${this.formatDate((n.createdAt || '').slice(0, 10))}
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn-icon" onclick="App.openEditNoteModal(${n.id})" title="Edit Note">✏️</button>
+              <button class="btn-icon" onclick="App.deleteNote(${n.id})" title="Delete Note">🗑️</button>
+            </div>
+          </div>
+          <div style="font-size: 0.9rem; color: var(--text-main); white-space: pre-wrap; line-height: 1.5;">${this.escapeHTML(n.content)}</div>
+        </div>
+      `).join('');
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+        <h2 style="font-size: 1.15rem; font-weight: 800;">Student Progress & Lesson Notes</h2>
+        <button class="btn btn-primary" onclick="App.openAddNoteModal(${student.id})">+ Add Note</button>
+      </div>
+
+      ${notesHTML}
+    `;
+  },
+
+  // ==========================================
+  // PAGE 5: GLOBAL PAYMENTS PAGE
+  // ==========================================
+  async renderPayments(root) {
+    const students = await DB.getAll('students');
+    const activeStudents = students.filter(s => s.status === 'active');
+    activeStudents.sort((a, b) => a.name.localeCompare(b.name));
+
+    const payments = await DB.getByIndex('payments', 'paymentMonth', this.currentPaymentMonth);
+
+    let totalExpected = 0;
+    let totalCollected = 0;
+
+    const breakdown = activeStudents.map(student => {
+      const fee = Number(student.monthlyFee) || 0;
+      const studentPayments = payments.filter(p => p.studentId === student.id);
+      const paid = studentPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+      const due = Math.max(0, fee - paid);
+
+      totalExpected += fee;
+      totalCollected += paid;
+
+      let status = 'due';
+      if (paid >= fee && fee > 0) status = 'paid';
+      else if (paid > 0) status = 'partial';
+
+      return { student, fee, paid, due, status, studentPayments };
+    });
+
+    const totalDue = Math.max(0, totalExpected - totalCollected);
+
+    root.innerHTML = `
+      <div class="page-header">
+        <div class="page-header-titles">
+          <h1 class="page-title">Monthly Payments</h1>
+          <div class="page-desc">Track collected tuition fees & outstanding balances</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" onclick="App.changePaymentMonth(-1)">‹ Prev Month</button>
+          <input type="month" class="form-input" style="width: auto; font-weight: 700;" 
+                 value="${this.currentPaymentMonth}" 
+                 onchange="App.setPaymentMonth(this.value)">
+          <button class="btn btn-secondary" onclick="App.changePaymentMonth(1)">Next Month ›</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label">Expected Total</span>
+          <span class="stat-value">${this.formatCurrency(totalExpected)}</span>
+          <span class="stat-sub">${activeStudents.length} active students</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Collected</span>
+          <span class="stat-value success">${this.formatCurrency(totalCollected)}</span>
+          <span class="stat-sub">${totalExpected > 0 ? Math.round((totalCollected / totalExpected) * 100) : 0}% collected</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Outstanding Due</span>
+          <span class="stat-value ${totalDue > 0 ? 'danger' : 'success'}">${this.formatCurrency(totalDue)}</span>
+          <span class="stat-sub">${breakdown.filter(b => b.status !== 'paid').length} students pending</span>
+        </div>
+      </div>
+
+      <div class="card-header" style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;">
+        <div class="card-title">STUDENT PAYMENT STATUS FOR ${this.formatMonth(this.currentPaymentMonth).toUpperCase()}</div>
+      </div>
+
+      <div>
+        ${breakdown.map(item => {
+          let badge = `<span class="badge badge-due">✕ Due (${this.formatCurrency(item.due)})</span>`;
+          if (item.status === 'paid') badge = `<span class="badge badge-paid">✓ Paid</span>`;
+          else if (item.status === 'partial') badge = `<span class="badge badge-partial">◐ Partial (Due: ${this.formatCurrency(item.due)})</span>`;
+
+          return `
+            <div class="payment-row" onclick="App.navigate('student', { id: ${item.student.id}, tab: 'payments' })">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="st-avatar" style="width: 38px; height: 38px; font-size: 0.9rem;">
+                  ${this.getInitials(item.student.name)}
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.95rem;">${this.escapeHTML(item.student.name)}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">
+                    Monthly Fee: ${this.formatCurrency(item.fee)} • Collected: <strong style="color:var(--success)">${this.formatCurrency(item.paid)}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 10px;">
+                ${badge}
+                <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); App.openAddPaymentModal(${item.student.id}, '${this.currentPaymentMonth}')">
+                  + Pay
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  },
+
+  setPaymentMonth(val) {
+    if (!val) return;
+    this.currentPaymentMonth = val;
+    this.render();
+  },
+
+  changePaymentMonth(delta) {
+    const [y, m] = this.currentPaymentMonth.split('-').map(Number);
+    const date = new Date(y, m - 1 + delta, 1);
+    this.currentPaymentMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    this.render();
+  },
+
+  // ==========================================
+  // PAGE 6: SETTINGS & BACKUP/RESTORE
+  // ==========================================
+  async renderSettings(root) {
+    const students = await DB.getAll('students');
+    const sessions = await DB.getAll('class_sessions');
+    const payments = await DB.getAll('payments');
+    const syllabus = await DB.getAll('syllabus_topics');
+
+    root.innerHTML = `
+      <div class="page-header">
+        <div class="page-header-titles">
+          <h1 class="page-title">Settings & Backup</h1>
+          <div class="page-desc">Data safety, offline backup export, and preferences</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px;">
+        <!-- Backup & Restore -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💾 Local Data Backup & Restore</div>
+          </div>
+          <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+            All your data is stored securely on this device. You can download a complete backup file or restore from a previous JSON export.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn btn-primary" onclick="App.exportBackup()">
+              📥 Export Local Backup (.json)
+            </button>
+            <button class="btn btn-secondary" onclick="document.getElementById('backup-file-input').click()">
+              📤 Import / Restore Backup File
+            </button>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚙️ App Preferences</div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Theme Mode</label>
+            <div style="display:flex; gap:10px;">
+              <button class="btn ${this.theme === 'light' ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="App.setTheme('light')">☀️ Light Mode</button>
+              <button class="btn ${this.theme === 'dark' ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="App.setTheme('dark')">🌙 Dark Mode</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Currency Symbol</label>
+            <select class="form-select" onchange="App.setCurrency(this.value)">
+              <option value="৳" ${this.currency === '৳' ? 'selected' : ''}>৳ (BDT - Taka)</option>
+              <option value="$" ${this.currency === '$' ? 'selected' : ''}>$ (USD / Dollar)</option>
+              <option value="₹" ${this.currency === '₹' ? 'selected' : ''}>₹ (INR - Rupee)</option>
+              <option value="€" ${this.currency === '€' ? 'selected' : ''}>€ (EUR - Euro)</option>
+              <option value="£" ${this.currency === '£' ? 'selected' : ''}>£ (GBP - Pound)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 18px;">
+            <label class="form-label">Demo Sample Data</label>
+            <button class="btn btn-secondary btn-sm" onclick="App.loadSampleData()">
+              ⚡ Populate Demo Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Storage Statistics -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📊 Database Statistics</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem;">
+            <div><strong>Students:</strong> ${students.length} (${students.filter(s=>s.status==='active').length} active)</div>
+            <div><strong>Logged Class Sessions:</strong> ${sessions.length}</div>
+            <div><strong>Payment Records:</strong> ${payments.length}</div>
+            <div><strong>Syllabus Topics:</strong> ${syllabus.length}</div>
+            <div><strong>Storage Engine:</strong> IndexedDB (100% Offline)</div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  setCurrency(c) {
+    this.currency = c;
+    localStorage.setItem('tutordesk_currency', c);
+    this.toast(`Currency updated to ${c}`);
+    this.render();
+  },
+
+  async exportBackup() {
+    const backup = {
+      app: 'TutorDesk',
+      version: 1,
+      exportDate: new Date().toISOString(),
+      students: await DB.getAll('students'),
+      schedules: await DB.getAll('schedules'),
+      schedule_days: await DB.getAll('schedule_days'),
+      class_sessions: await DB.getAll('class_sessions'),
+      syllabus_topics: await DB.getAll('syllabus_topics'),
+      payments: await DB.getAll('payments'),
+      student_notes: await DB.getAll('student_notes')
+    };
+
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backup, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    const dateStr = this.getTodayDateString();
+    downloadAnchor.setAttribute('download', `tutordesk-backup-${dateStr}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+
+    this.toast('Backup file downloaded successfully!');
+  },
+
+  async handleBackupRestore(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data.students || !Array.isArray(data.students)) {
+          alert('Invalid backup file format.');
+          return;
+        }
+
+        if (!confirm('Importing this backup will replace existing data. Proceed?')) {
+          return;
+        }
+
+        await DB.clear('students');
+        await DB.clear('schedules');
+        await DB.clear('schedule_days');
+        await DB.clear('class_sessions');
+        await DB.clear('syllabus_topics');
+        await DB.clear('payments');
+        await DB.clear('student_notes');
+
+        for (const s of data.students || []) await DB.add('students', s);
+        for (const s of data.schedules || []) await DB.add('schedules', s);
+        for (const s of data.schedule_days || []) await DB.add('schedule_days', s);
+        for (const s of data.class_sessions || []) await DB.add('class_sessions', s);
+        for (const s of data.syllabus_topics || []) await DB.add('syllabus_topics', s);
+        for (const s of data.payments || []) await DB.add('payments', s);
+        for (const s of data.student_notes || []) await DB.add('student_notes', s);
+
+        this.toast('Backup restored successfully!', 'success');
+        this.navigate('today');
+      } catch (err) {
+        alert('Error parsing backup file: ' + err);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  },
+
+  async loadSampleData() {
+    if (!confirm('Load realistic sample students & schedules into your database?')) return;
+
+    // Student 1: Ahmed Rahman
+    const s1Id = await DB.add('students', {
+      name: 'Ahmed Rahman',
+      phone: '01711223344',
+      grade: '10',
+      school: 'Mirpur Model High School',
+      guardianName: 'Dr. M. Rahman',
+      guardianPhone: '01711998877',
+      address: 'House 12, Road 4, Mirpur 10, Dhaka',
+      monthlyFee: 3000,
+      subjects: ['Chemistry', 'Physics'],
+      status: 'active',
+      createdAt: new Date().toISOString()
+    });
+
+    const sched1 = await DB.add('schedules', {
+      studentId: s1Id,
+      subjectName: 'Chemistry',
+      location: 'Mirpur 10, Dhaka',
+      createdAt: new Date().toISOString()
+    });
+
+    await DB.add('schedule_days', { scheduleId: sched1, studentId: s1Id, dayOfWeek: 0, startTime: '18:00', endTime: '19:00' });
+    await DB.add('schedule_days', { scheduleId: sched1, studentId: s1Id, dayOfWeek: 2, startTime: '18:00', endTime: '19:00' });
+    await DB.add('schedule_days', { scheduleId: sched1, studentId: s1Id, dayOfWeek: 4, startTime: '18:00', endTime: '19:00' });
+
+    await DB.add('syllabus_topics', { studentId: s1Id, subjectName: 'Chemistry', topic: 'Atomic Structure', status: 'completed', order: 1 });
+    await DB.add('syllabus_topics', { studentId: s1Id, subjectName: 'Chemistry', topic: 'Periodic Table', status: 'completed', order: 2 });
+    await DB.add('syllabus_topics', { studentId: s1Id, subjectName: 'Chemistry', topic: 'Chemical Bonding', status: 'in_progress', order: 3 });
+    await DB.add('syllabus_topics', { studentId: s1Id, subjectName: 'Chemistry', topic: 'Organic Chemistry', status: 'not_started', order: 4 });
+    await DB.add('syllabus_topics', { studentId: s1Id, subjectName: 'Physics', topic: 'Motion & Mechanics', status: 'completed', order: 5 });
+    await DB.add('syllabus_topics', { studentId: s1Id, subjectName: 'Physics', topic: 'Energy & Power', status: 'in_progress', order: 6 });
+
+    await DB.add('payments', { studentId: s1Id, amount: 3000, paymentMonth: this.currentPaymentMonth, paymentDate: this.getTodayDateString(), method: 'Cash', note: 'Monthly tuition full payment' });
+
+    // Student 2: Rakib Hasan
+    const s2Id = await DB.add('students', {
+      name: 'Rakib Hasan',
+      phone: '01822334455',
+      grade: '12',
+      school: 'Dhaka City College',
+      guardianName: 'Mrs. Hasan',
+      guardianPhone: '01822001122',
+      address: 'Dhanmondi 27, Dhaka',
+      monthlyFee: 3500,
+      subjects: ['Higher Math', 'Physics'],
+      status: 'active',
+      createdAt: new Date().toISOString()
+    });
+
+    const sched2 = await DB.add('schedules', {
+      studentId: s2Id,
+      subjectName: 'Higher Math',
+      location: 'Dhanmondi, Dhaka',
+      createdAt: new Date().toISOString()
+    });
+    
+    const todayDOW = new Date().getDay();
+    await DB.add('schedule_days', { scheduleId: sched2, studentId: s2Id, dayOfWeek: todayDOW, startTime: '19:00', endTime: '20:00' });
+
+    await this.syncTodaySessions();
+    this.toast('Sample data loaded!', 'success');
+    this.navigate('today');
+  },
+
+  // ==========================================
+  // MODALS & FORMS
+  // ==========================================
+  showModal(title, htmlContent, submitBtnText = 'Save', onSubmit = null) {
+    const container = document.getElementById('modal-container');
+    const backdrop = document.getElementById('modal-backdrop');
+    const inner = document.getElementById('modal-inner');
+
+    inner.innerHTML = `
+      <div class="modal-header">
+        <h3 class="modal-title">${title}</h3>
+        <button class="modal-close-btn" onclick="App.closeModal()">✕</button>
+      </div>
+      <form id="modal-form" onsubmit="event.preventDefault();">
+        <div class="modal-body">
+          ${htmlContent}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeModal()">Close</button>
+          ${submitBtnText ? `<button type="submit" class="btn btn-primary" id="modal-submit-btn">${submitBtnText}</button>` : ''}
+        </div>
+      </form>
+    `;
+
+    backdrop.classList.add('open');
+    container.classList.add('open');
+
+    if (onSubmit) {
+      document.getElementById('modal-form').onsubmit = (e) => {
+        e.preventDefault();
+        onSubmit();
+      };
+    }
+  },
+
+  closeModal() {
+    document.getElementById('modal-backdrop').classList.remove('open');
+    document.getElementById('modal-container').classList.remove('open');
+  },
+
+  // Print Receipt Modal
+  async openReceiptModal(paymentId) {
+    const payment = await DB.get('payments', paymentId);
+    if (!payment) return;
+
+    const student = await DB.get('students', payment.studentId);
+    if (!student) return;
+
+    const allMonthPayments = (await DB.getByIndex('payments', 'paymentMonth', payment.paymentMonth))
+      .filter(p => p.studentId === student.id);
+    const totalPaidMonth = allMonthPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const fee = Number(student.monthlyFee) || 0;
+    const due = Math.max(0, fee - totalPaidMonth);
+
+    const receiptHTML = `
+      <div id="printable-area" class="printable-doc">
+        <div class="receipt-header">
+          <div class="receipt-title">TUITION FEE RECEIPT</div>
+          <div class="receipt-subtitle">TutorDesk Official Payment Acknowledgment</div>
+        </div>
+
+        <div class="receipt-grid">
+          <div><strong>Student:</strong> ${this.escapeHTML(student.name)}</div>
+          <div><strong>Class / Grade:</strong> ${this.escapeHTML(student.grade || 'N/A')}</div>
+          <div><strong>Subject(s):</strong> ${this.escapeHTML((student.subjects || []).join(', '))}</div>
+          <div><strong>Payment For Month:</strong> ${this.formatMonth(payment.paymentMonth)}</div>
+          <div><strong>Date Received:</strong> ${this.formatDate(payment.paymentDate)}</div>
+          <div><strong>Payment Method:</strong> ${this.escapeHTML(payment.method || 'Cash')}</div>
+        </div>
+
+        <div class="receipt-amount-box">
+          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b;">Amount Received</div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: #059669;">${this.formatCurrency(payment.amount)}</div>
+          ${payment.note ? `<div style="font-size:0.8rem; color:#64748b; margin-top:4px;">"${this.escapeHTML(payment.note)}"</div>` : ''}
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding-top:8px; border-top:1px dashed #cbd5e1;">
+          <div>Monthly Fee: <strong>${this.formatCurrency(fee)}</strong></div>
+          <div>Total Paid this Month: <strong>${this.formatCurrency(totalPaidMonth)}</strong></div>
+          <div>Remaining Balance: <strong>${this.formatCurrency(due)}</strong></div>
+        </div>
+
+        <div style="margin-top: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div style="font-size: 0.75rem; color: #94a3b8;">Generated via TutorDesk (Offline)</div>
+          <div style="text-align: center; border-top: 1px solid #0f172a; width: 140px; padding-top: 4px; font-size: 0.8rem; font-weight: 600;">Tutor Signature</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px;">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    `;
+
+    this.showModal(`Payment Receipt — ${student.name}`, receiptHTML, null);
+  },
+
+  // Student Monthly Report Card Modal
+  async openStudentReportModal(studentId) {
+    const student = await DB.get('students', studentId);
+    if (!student) return;
+
+    const syllabus = await DB.getByIndex('syllabus_topics', 'studentId', student.id);
+    const sessions = await DB.getByIndex('class_sessions', 'studentId', student.id);
+    const payments = await DB.getByIndex('payments', 'studentId', student.id);
+
+    const completed = syllabus.filter(t => t.status === 'completed').length;
+    const inProgress = syllabus.filter(t => t.status === 'in_progress').length;
+    const totalTopics = syllabus.length;
+    const progressScore = totalTopics > 0 ? Math.round(((completed * 1.0 + inProgress * 0.5) / totalTopics) * 100) : 0;
+
+    const attendedSessions = sessions.filter(s => s.attendance === 'present').length;
+    const heldSessions = sessions.filter(s => s.attendance === 'present' || s.attendance === 'absent').length;
+    const attRate = heldSessions > 0 ? Math.round((attendedSessions / heldSessions) * 100) : 100;
+
+    const reportHTML = `
+      <div id="printable-area" class="printable-doc">
+        <div class="receipt-header">
+          <div class="receipt-title">STUDENT ACADEMIC & PROGRESS REPORT</div>
+          <div class="receipt-subtitle">Personal Tutoring Evaluation</div>
+        </div>
+
+        <div class="receipt-grid">
+          <div><strong>Student Name:</strong> ${this.escapeHTML(student.name)}</div>
+          <div><strong>Grade / Class:</strong> ${this.escapeHTML(student.grade || 'N/A')}</div>
+          <div><strong>Institution:</strong> ${this.escapeHTML(student.school || 'N/A')}</div>
+          <div><strong>Subjects:</strong> ${this.escapeHTML((student.subjects || []).join(', '))}</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+          <div class="receipt-amount-box" style="margin-bottom:0;">
+            <div style="font-size:0.75rem; color:#64748b; font-weight:700;">ATTENDANCE RATE</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#059669;">${attRate}%</div>
+            <div style="font-size:0.75rem; color:#64748b;">${attendedSessions} present of ${heldSessions} classes</div>
+          </div>
+          <div class="receipt-amount-box" style="margin-bottom:0;">
+            <div style="font-size:0.75rem; color:#64748b; font-weight:700;">SYLLABUS PROGRESS</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#4f46e5;">${progressScore}%</div>
+            <div style="font-size:0.75rem; color:#64748b;">${completed}/${totalTopics} topics completed</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; margin-bottom: 14px;">
+          <div style="font-weight:700; font-size:0.9rem; margin-bottom:6px; border-bottom:1px solid #cbd5e1; padding-bottom:3px;">Coursework Breakdown</div>
+          <div style="font-size:0.82rem; display:flex; flex-direction:column; gap:4px;">
+            ${syllabus.length === 0 ? '<div style="color:#64748b;">No topics logged</div>' : syllabus.slice(0, 8).map(t => `
+              <div style="display:flex; justify-content:space-between;">
+                <span>• ${this.escapeHTML(t.topic)} (${this.escapeHTML(t.subjectName || 'General')})</span>
+                <strong style="color:${t.status === 'completed' ? '#059669' : (t.status === 'in_progress' ? '#d97706' : '#64748b')}">${t.status === 'completed' ? '✓ Mastered' : (t.status === 'in_progress' ? '◐ In Progress' : '○ Pending')}</strong>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div style="margin-top: 28px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div style="font-size: 0.75rem; color: #94a3b8;">Report Date: ${this.formatDate(this.getTodayDateString())}</div>
+          <div style="text-align: center; border-top: 1px solid #0f172a; width: 140px; padding-top: 4px; font-size: 0.8rem; font-weight: 600;">Tutor Signature</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px;">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    `;
+
+    this.showModal(`Progress Report — ${student.name}`, reportHTML, null);
+  },
+
+  // Log Extra / Ad-hoc Class Session Modal
+  async openAddAdHocSessionModal(prefillStudentId = null) {
+    const students = await DB.getAll('students');
+    const active = students.filter(s => s.status === 'active');
+    const today = this.getTodayDateString();
+
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Select Student *</label>
+        <select class="form-select" id="inp-adhoc-student" required>
+          ${active.map(s => `<option value="${s.id}" ${prefillStudentId === s.id ? 'selected' : ''}>${this.escapeHTML(s.name)} (${this.escapeHTML((s.subjects || []).join(', '))})</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date *</label>
+          <input type="date" class="form-input" id="inp-adhoc-date" required value="${today}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" class="form-input" id="inp-adhoc-subject" placeholder="e.g. Exam Revision">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Time *</label>
+          <input type="time" class="form-input" id="inp-adhoc-start" required value="17:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Time *</label>
+          <input type="time" class="form-input" id="inp-adhoc-end" required value="18:00">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Location <span class="opt">(optional)</span></label>
+        <input type="text" class="form-input" id="inp-adhoc-loc" placeholder="e.g. Student Residence / Online">
+      </div>
+    `;
+
+    this.showModal('+ Log Extra / Makeup Class', formHTML, 'Save Class', async () => {
+      const studentId = Number(document.getElementById('inp-adhoc-student').value);
+      const date = document.getElementById('inp-adhoc-date').value;
+      const subjectName = document.getElementById('inp-adhoc-subject').value.trim() || 'Extra Tuition';
+      const startTime = document.getElementById('inp-adhoc-start').value;
+      const endTime = document.getElementById('inp-adhoc-end').value;
+      const location = document.getElementById('inp-adhoc-loc').value.trim();
+
+      const dow = new Date(date + 'T00:00:00').getDay();
+
+      await DB.add('class_sessions', {
+        studentId,
+        date,
+        dayOfWeek: dow,
+        startTime,
+        endTime,
+        subjectName,
+        location,
+        attendance: 'pending',
+        createdAt: new Date().toISOString()
+      });
+
+      this.closeModal();
+      this.toast('Extra class logged!');
+      if (this.currentStudentId) this.renderStudentProfile();
+      else this.render();
+    });
+  },
+
+  // Add Student Modal
+  openAddStudentModal() {
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input type="text" class="form-input" id="inp-st-name" required placeholder="e.g. Ahmed Rahman">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input type="tel" class="form-input" id="inp-st-phone" required placeholder="e.g. 01712345678">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Class / Grade *</label>
+          <input type="text" class="form-input" id="inp-st-grade" required placeholder="e.g. 10 or O-Level">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Subject(s) <span class="opt">(comma separated)</span> *</label>
+          <input type="text" class="form-input" id="inp-st-subjects" required placeholder="e.g. Chemistry, Physics">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Tuition Fee (${this.currency}) *</label>
+          <input type="number" class="form-input" id="inp-st-fee" required placeholder="e.g. 3000" min="0">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Guardian Name <span class="opt">(optional)</span></label>
+          <input type="text" class="form-input" id="inp-st-gname" placeholder="e.g. Dr. Rahman">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Guardian Phone <span class="opt">(optional)</span></label>
+          <input type="tel" class="form-input" id="inp-st-gphone" placeholder="e.g. 01711223344">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">School / Institution <span class="opt">(optional)</span></label>
+        <input type="text" class="form-input" id="inp-st-school" placeholder="e.g. Dhaka Residential Model College">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Address / Location <span class="opt">(optional)</span></label>
+        <input type="text" class="form-input" id="inp-st-address" placeholder="e.g. Mirpur 10, Dhaka">
+      </div>
+    `;
+
+    this.showModal('+ Add New Student', formHTML, 'Save Student', async () => {
+      const name = document.getElementById('inp-st-name').value.trim();
+      const phone = document.getElementById('inp-st-phone').value.trim();
+      const grade = document.getElementById('inp-st-grade').value.trim();
+      const subjectsStr = document.getElementById('inp-st-subjects').value.trim();
+      const fee = Number(document.getElementById('inp-st-fee').value) || 0;
+      const guardianName = document.getElementById('inp-st-gname').value.trim();
+      const guardianPhone = document.getElementById('inp-st-gphone').value.trim();
+      const school = document.getElementById('inp-st-school').value.trim();
+      const address = document.getElementById('inp-st-address').value.trim();
+
+      if (!name || !phone) {
+        alert('Please fill out student name and phone.');
+        return;
+      }
+
+      const subjects = subjectsStr.split(',').map(s => s.trim()).filter(Boolean);
+
+      const newId = await DB.add('students', {
+        name,
+        phone,
+        grade,
+        subjects,
+        monthlyFee: fee,
+        guardianName,
+        guardianPhone,
+        school,
+        address,
+        status: 'active',
+        createdAt: new Date().toISOString()
+      });
+
+      this.closeModal();
+      this.toast('Student added successfully!');
+      this.navigate('student', { id: newId, tab: 'schedule' });
+    });
+  },
+
+  // Edit Student Modal
+  async openEditStudentModal(studentId) {
+    const student = await DB.get('students', studentId);
+    if (!student) return;
+
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input type="text" class="form-input" id="inp-st-name" required value="${this.escapeHTML(student.name)}">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input type="tel" class="form-input" id="inp-st-phone" required value="${this.escapeHTML(student.phone)}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Class / Grade *</label>
+          <input type="text" class="form-input" id="inp-st-grade" required value="${this.escapeHTML(student.grade || '')}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Subject(s) *</label>
+          <input type="text" class="form-input" id="inp-st-subjects" required value="${this.escapeHTML((student.subjects || []).join(', '))}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Tuition Fee (${this.currency}) *</label>
+          <input type="number" class="form-input" id="inp-st-fee" required value="${student.monthlyFee || 0}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Guardian Name</label>
+          <input type="text" class="form-input" id="inp-st-gname" value="${this.escapeHTML(student.guardianName || '')}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Guardian Phone</label>
+          <input type="tel" class="form-input" id="inp-st-gphone" value="${this.escapeHTML(student.guardianPhone || '')}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">School / Institution</label>
+        <input type="text" class="form-input" id="inp-st-school" value="${this.escapeHTML(student.school || '')}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Address / Location</label>
+        <input type="text" class="form-input" id="inp-st-address" value="${this.escapeHTML(student.address || '')}">
+      </div>
+    `;
+
+    this.showModal('Edit Student Profile', formHTML, 'Update Student', async () => {
+      student.name = document.getElementById('inp-st-name').value.trim();
+      student.phone = document.getElementById('inp-st-phone').value.trim();
+      student.grade = document.getElementById('inp-st-grade').value.trim();
+      student.subjects = document.getElementById('inp-st-subjects').value.split(',').map(s => s.trim()).filter(Boolean);
+      student.monthlyFee = Number(document.getElementById('inp-st-fee').value) || 0;
+      student.guardianName = document.getElementById('inp-st-gname').value.trim();
+      student.guardianPhone = document.getElementById('inp-st-gphone').value.trim();
+      student.school = document.getElementById('inp-st-school').value.trim();
+      student.address = document.getElementById('inp-st-address').value.trim();
+
+      await DB.put('students', student);
+      this.closeModal();
+      this.toast('Student profile updated!');
+      this.renderStudentProfile();
+    });
+  },
+
+  async toggleArchiveStudent(studentId) {
+    const student = await DB.get('students', studentId);
+    if (!student) return;
+
+    student.status = student.status === 'archived' ? 'active' : 'archived';
+    await DB.put('students', student);
+    this.toast(`Student ${student.status === 'archived' ? 'archived' : 'restored'}!`);
+    this.renderStudentProfile();
+  },
+
+  async confirmDeleteStudent(studentId) {
+    if (!confirm('Are you sure you want to delete this student? All schedules, syllabus, and payment records for this student will also be permanently deleted.')) {
+      return;
+    }
+
+    const schedules = await DB.getByIndex('schedules', 'studentId', studentId);
+    for (const sc of schedules) await DB.delete('schedules', sc.id);
+
+    const scheduleDays = await DB.getByIndex('schedule_days', 'studentId', studentId);
+    for (const d of scheduleDays) await DB.delete('schedule_days', d.id);
+
+    const sessions = await DB.getByIndex('class_sessions', 'studentId', studentId);
+    for (const s of sessions) await DB.delete('class_sessions', s.id);
+
+    const topics = await DB.getByIndex('syllabus_topics', 'studentId', studentId);
+    for (const t of topics) await DB.delete('syllabus_topics', t.id);
+
+    const payments = await DB.getByIndex('payments', 'studentId', studentId);
+    for (const p of payments) await DB.delete('payments', p.id);
+
+    const notes = await DB.getByIndex('student_notes', 'studentId', studentId);
+    for (const n of notes) await DB.delete('student_notes', n.id);
+
+    await DB.delete('students', studentId);
+    this.toast('Student permanently deleted.');
+    this.navigate('students');
+  },
+
+  // Add / Edit Recurring Schedule Modal
+  async openAddScheduleModal(studentId, existingSchedId = null) {
+    const student = await DB.get('students', studentId);
+    let sched = null;
+    let existingDays = [];
+
+    if (existingSchedId) {
+      sched = await DB.get('schedules', existingSchedId);
+      existingDays = await DB.getByIndex('schedule_days', 'scheduleId', existingSchedId);
+    }
+
+    const defaultSubject = sched ? sched.subjectName : (student.subjects && student.subjects[0] ? student.subjects[0] : 'Tuition');
+    const defaultLocation = sched ? sched.location : (student.address || '');
+
+    const selectedDaysMap = {};
+    existingDays.forEach(d => {
+      selectedDaysMap[d.dayOfWeek] = { startTime: d.startTime, endTime: d.endTime };
+    });
+
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Subject *</label>
+        <input type="text" class="form-input" id="inp-sc-subject" required value="${this.escapeHTML(defaultSubject)}" placeholder="e.g. Chemistry">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Class Location <span class="opt">(optional)</span></label>
+        <input type="text" class="form-input" id="inp-sc-location" value="${this.escapeHTML(defaultLocation)}" placeholder="e.g. Mirpur / Student Home">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Select Weekly Days *</label>
+        <div class="day-selector-grid">
+          ${this.daysOfWeek.map((name, idx) => `
+            <div class="day-pill">
+              <input type="checkbox" id="chk-day-${idx}" value="${idx}" ${selectedDaysMap[idx] ? 'checked' : ''} onchange="App.toggleScheduleDayRow(${idx})">
+              <label class="day-pill-label" for="chk-day-${idx}">${this.daysShort[idx]}</label>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px;">
+        <label class="form-label">Class Timings per Day</label>
+        <div id="schedule-timings-container" style="display: flex; flex-direction: column; gap: 10px;">
+          ${this.daysOfWeek.map((name, idx) => {
+            const hasDay = !!selectedDaysMap[idx];
+            const start = hasDay ? selectedDaysMap[idx].startTime : '18:00';
+            const end = hasDay ? selectedDaysMap[idx].endTime : '19:00';
+
+            return `
+              <div id="day-timing-row-${idx}" style="display: ${hasDay ? 'flex' : 'none'}; align-items: center; gap: 10px; background: var(--bg); padding: 8px 12px; border-radius: var(--radius); border: 1px solid var(--border);">
+                <div style="width: 80px; font-weight: 700; font-size: 0.85rem;">${name}</div>
+                <div style="flex: 1; display: flex; align-items: center; gap: 6px;">
+                  <input type="time" class="form-input" id="time-start-${idx}" value="${start}">
+                  <span>to</span>
+                  <input type="time" class="form-input" id="time-end-${idx}" value="${end}">
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    this.showModal(existingSchedId ? 'Edit Weekly Schedule' : '+ Add Weekly Schedule', formHTML, 'Save Schedule', async () => {
+      const subjectName = document.getElementById('inp-sc-subject').value.trim();
+      const location = document.getElementById('inp-sc-location').value.trim();
+
+      if (!subjectName) {
+        alert('Subject name is required.');
+        return;
+      }
+
+      const daysToSave = [];
+      for (let i = 0; i < 7; i++) {
+        const chk = document.getElementById(`chk-day-${i}`);
+        if (chk && chk.checked) {
+          const startTime = document.getElementById(`time-start-${i}`).value || '18:00';
+          const endTime = document.getElementById(`time-end-${i}`).value || '19:00';
+          daysToSave.push({ dayOfWeek: i, startTime, endTime });
+        }
+      }
+
+      if (daysToSave.length === 0) {
+        alert('Please select at least one day for this weekly schedule.');
+        return;
+      }
+
+      let scheduleId = existingSchedId;
+      if (existingSchedId) {
+        sched.subjectName = subjectName;
+        sched.location = location;
+        await DB.put('schedules', sched);
+
+        for (const d of existingDays) {
+          await DB.delete('schedule_days', d.id);
+        }
+      } else {
+        scheduleId = await DB.add('schedules', {
+          studentId,
+          subjectName,
+          location,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      for (const d of daysToSave) {
+        await DB.add('schedule_days', {
+          scheduleId,
+          studentId,
+          dayOfWeek: d.dayOfWeek,
+          startTime: d.startTime,
+          endTime: d.endTime
+        });
+      }
+
+      await this.syncTodaySessions();
+      this.closeModal();
+      this.toast('Weekly schedule saved!');
+      this.renderStudentProfile();
+    });
+  },
+
+  openEditScheduleModal(scheduleId) {
+    DB.get('schedules', scheduleId).then(sched => {
+      if (sched) this.openAddScheduleModal(sched.studentId, scheduleId);
+    });
+  },
+
+  toggleScheduleDayRow(dayIdx) {
+    const chk = document.getElementById(`chk-day-${dayIdx}`);
+    const row = document.getElementById(`day-timing-row-${dayIdx}`);
+    if (row && chk) {
+      row.style.display = chk.checked ? 'flex' : 'none';
+    }
+  },
+
+  async deleteSchedule(scheduleId) {
+    if (!confirm('Delete this weekly schedule? Note: Past completed class sessions will remain safely saved in class history.')) {
+      return;
+    }
+
+    const days = await DB.getByIndex('schedule_days', 'scheduleId', scheduleId);
+    for (const d of days) await DB.delete('schedule_days', d.id);
+    await DB.delete('schedules', scheduleId);
+
+    this.toast('Schedule deleted.');
+    this.renderStudentProfile();
+  },
+
+  // Syllabus Modal
+  async openAddTopicModal(studentId, prefillSubject = '') {
+    const student = await DB.get('students', studentId);
+    const subjects = student.subjects || [];
+
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Topic / Chapter Name *</label>
+        <input type="text" class="form-input" id="inp-tp-name" required placeholder="e.g. Chemical Bonding">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input type="text" class="form-input" id="inp-tp-subject" list="subject-suggestions" value="${this.escapeHTML(prefillSubject || (subjects[0] || ''))}" placeholder="e.g. Chemistry">
+        <datalist id="subject-suggestions">
+          ${subjects.map(s => `<option value="${this.escapeHTML(s)}">`).join('')}
+        </datalist>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Initial Status</label>
+        <select class="form-select" id="inp-tp-status">
+          <option value="not_started">Not Started</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+    `;
+
+    this.showModal('+ Add Syllabus Topic', formHTML, 'Save Topic', async () => {
+      const topic = document.getElementById('inp-tp-name').value.trim();
+      const subjectName = document.getElementById('inp-tp-subject').value.trim();
+      const status = document.getElementById('inp-tp-status').value;
+
+      if (!topic) {
+        alert('Please enter topic name.');
+        return;
+      }
+
+      const allTopics = await DB.getByIndex('syllabus_topics', 'studentId', studentId);
+      const maxOrder = allTopics.reduce((max, t) => Math.max(max, t.order || 0), 0);
+
+      await DB.add('syllabus_topics', {
+        studentId,
+        subjectName,
+        topic,
+        status,
+        order: maxOrder + 1,
+        createdAt: new Date().toISOString()
+      });
+
+      this.closeModal();
+      this.toast('Topic added!');
+      this.renderStudentProfile();
+    });
+  },
+
+  async openEditTopicModal(topicId) {
+    const topic = await DB.get('syllabus_topics', topicId);
+    if (!topic) return;
+
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Topic / Chapter Name *</label>
+        <input type="text" class="form-input" id="inp-tp-name" required value="${this.escapeHTML(topic.topic)}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input type="text" class="form-input" id="inp-tp-subject" value="${this.escapeHTML(topic.subjectName || '')}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="inp-tp-status">
+          <option value="not_started" ${topic.status === 'not_started' ? 'selected' : ''}>Not Started</option>
+          <option value="in_progress" ${topic.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+          <option value="completed" ${topic.status === 'completed' ? 'selected' : ''}>Completed</option>
+        </select>
+      </div>
+    `;
+
+    this.showModal('Edit Topic', formHTML, 'Update Topic', async () => {
+      topic.topic = document.getElementById('inp-tp-name').value.trim();
+      topic.subjectName = document.getElementById('inp-tp-subject').value.trim();
+      topic.status = document.getElementById('inp-tp-status').value;
+
+      await DB.put('syllabus_topics', topic);
+      this.closeModal();
+      this.toast('Topic updated!');
+      this.renderStudentProfile();
+    });
+  },
+
+  async deleteTopic(topicId) {
+    if (!confirm('Delete this syllabus topic?')) return;
+    await DB.delete('syllabus_topics', topicId);
+    this.toast('Topic removed.');
+    this.renderStudentProfile();
+  },
+
+  // Payment Modal
+  async openAddPaymentModal(studentId, prefillMonth = '') {
+    const student = await DB.get('students', studentId);
+    const month = prefillMonth || this.currentPaymentMonth;
+    const today = this.getTodayDateString();
+
+    const formHTML = `
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Payment Amount (${this.currency}) *</label>
+          <input type="number" class="form-input" id="inp-py-amount" required value="${student.monthlyFee || ''}" placeholder="e.g. 3000" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment For Month *</label>
+          <input type="month" class="form-input" id="inp-py-month" required value="${month}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Actual Received Date *</label>
+          <input type="date" class="form-input" id="inp-py-date" required value="${today}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-select" id="inp-py-method">
+            <option value="Cash">Cash</option>
+            <option value="bKash / Mobile">bKash / Mobile Banking</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Optional Note</label>
+        <input type="text" class="form-input" id="inp-py-note" placeholder="e.g. 1st installment, paid by mother">
+      </div>
+    `;
+
+    this.showModal(`Record Payment — ${student.name}`, formHTML, 'Save Payment', async () => {
+      const amount = Number(document.getElementById('inp-py-amount').value);
+      const paymentMonth = document.getElementById('inp-py-month').value;
+      const paymentDate = document.getElementById('inp-py-date').value;
+      const method = document.getElementById('inp-py-method').value;
+      const note = document.getElementById('inp-py-note').value.trim();
+
+      if (!amount || !paymentMonth || !paymentDate) {
+        alert('Please fill amount, month, and date.');
+        return;
+      }
+
+      await DB.add('payments', {
+        studentId,
+        amount,
+        paymentMonth,
+        paymentDate,
+        method,
+        note,
+        createdAt: new Date().toISOString()
+      });
+
+      this.closeModal();
+      this.toast('Payment recorded successfully!');
+      if (this.currentStudentId) {
+        this.renderStudentProfile();
+      } else {
+        this.render();
+      }
+    });
+  },
+
+  async openEditPaymentModal(paymentId) {
+    const payment = await DB.get('payments', paymentId);
+    if (!payment) return;
+
+    const formHTML = `
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Payment Amount (${this.currency}) *</label>
+          <input type="number" class="form-input" id="inp-py-amount" required value="${payment.amount}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment For Month *</label>
+          <input type="month" class="form-input" id="inp-py-month" required value="${payment.paymentMonth}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Actual Received Date *</label>
+          <input type="date" class="form-input" id="inp-py-date" required value="${payment.paymentDate}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-select" id="inp-py-method">
+            <option value="Cash" ${payment.method === 'Cash' ? 'selected' : ''}>Cash</option>
+            <option value="bKash / Mobile" ${payment.method === 'bKash / Mobile' ? 'selected' : ''}>bKash / Mobile Banking</option>
+            <option value="Bank Transfer" ${payment.method === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+            <option value="Other" ${payment.method === 'Other' ? 'selected' : ''}>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Optional Note</label>
+        <input type="text" class="form-input" id="inp-py-note" value="${this.escapeHTML(payment.note || '')}">
+      </div>
+    `;
+
+    this.showModal('Edit Payment Record', formHTML, 'Update Payment', async () => {
+      payment.amount = Number(document.getElementById('inp-py-amount').value);
+      payment.paymentMonth = document.getElementById('inp-py-month').value;
+      payment.paymentDate = document.getElementById('inp-py-date').value;
+      payment.method = document.getElementById('inp-py-method').value;
+      payment.note = document.getElementById('inp-py-note').value.trim();
+
+      await DB.put('payments', payment);
+      this.closeModal();
+      this.toast('Payment record updated!');
+      this.renderStudentProfile();
+    });
+  },
+
+  async deletePayment(paymentId) {
+    if (!confirm('Are you sure you want to delete this payment record?')) return;
+    await DB.delete('payments', paymentId);
+    this.toast('Payment record deleted.');
+    this.renderStudentProfile();
+  },
+
+  // Note Modals
+  openAddNoteModal(studentId) {
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Note Content *</label>
+        <textarea class="form-textarea" id="inp-nt-content" rows="5" required placeholder="Write notes on student performance, weaknesses, homework, or exam scores..."></textarea>
+      </div>
+    `;
+
+    this.showModal('+ Add Lesson / Student Note', formHTML, 'Save Note', async () => {
+      const content = document.getElementById('inp-nt-content').value.trim();
+      if (!content) return;
+
+      await DB.add('student_notes', {
+        studentId,
+        content,
+        createdAt: new Date().toISOString()
+      });
+
+      this.closeModal();
+      this.toast('Note added!');
+      this.renderStudentProfile();
+    });
+  },
+
+  async openEditNoteModal(noteId) {
+    const note = await DB.get('student_notes', noteId);
+    if (!note) return;
+
+    const formHTML = `
+      <div class="form-group">
+        <label class="form-label">Note Content *</label>
+        <textarea class="form-textarea" id="inp-nt-content" rows="5" required>${this.escapeHTML(note.content)}</textarea>
+      </div>
+    `;
+
+    this.showModal('Edit Note', formHTML, 'Update Note', async () => {
+      note.content = document.getElementById('inp-nt-content').value.trim();
+      await DB.put('student_notes', note);
+
+      this.closeModal();
+      this.toast('Note updated!');
+      this.renderStudentProfile();
+    });
+  },
+
+  async deleteNote(noteId) {
+    if (!confirm('Delete this note?')) return;
+    await DB.delete('student_notes', noteId);
+    this.toast('Note deleted.');
+    this.renderStudentProfile();
+  },
+
+  escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
