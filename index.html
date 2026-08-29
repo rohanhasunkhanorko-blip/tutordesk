@@ -1004,7 +1004,7 @@ a {
 
 .timetable-matrix {
   width: 100%;
-  min-width: 860px;
+  min-width: 880px;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -1014,9 +1014,9 @@ a {
 }
 
 .tt-time-head {
-  width: 85px;
+  width: 145px;
   background: var(--bg);
-  padding: 12px 6px;
+  padding: 12px 10px;
   font-size: 0.76rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -1035,7 +1035,7 @@ a {
   font-weight: 700;
   background: var(--bg);
   color: var(--text-main);
-  width: 13.5%;
+  width: calc((100% - 145px) / 7);
 }
 
 .tt-day-head.is-today {
@@ -1046,11 +1046,11 @@ a {
 
 .tt-time-cell {
   background: var(--bg);
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--primary);
   text-align: center;
-  padding: 8px 4px;
+  padding: 12px 8px;
   position: sticky;
   left: 0;
   z-index: 5;
@@ -1060,8 +1060,8 @@ a {
 
 .tt-slot-cell {
   vertical-align: top;
-  padding: 5px;
-  height: 68px;
+  padding: 6px;
+  height: 72px;
   background: var(--card-bg);
   transition: background-color 0.15s ease;
 }
@@ -1078,7 +1078,7 @@ a {
   background: var(--primary-light);
   border-left: 3px solid var(--primary);
   border-radius: var(--radius-sm);
-  padding: 6px 8px;
+  padding: 8px 10px;
   margin-bottom: 4px;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -1091,7 +1091,7 @@ a {
 }
 
 .tt-block-name {
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--text-main);
   white-space: nowrap;
@@ -1100,40 +1100,35 @@ a {
 }
 
 .tt-block-sub {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.tt-block-time {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--primary);
   margin-top: 2px;
 }
 
 .tt-empty-hover {
   height: 100%;
-  min-height: 52px;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 0.35;
   cursor: pointer;
   border-radius: var(--radius-sm);
   border: 1px dashed transparent;
   transition: all 0.15s ease;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--text-muted);
 }
 
 .tt-slot-cell:hover .tt-empty-hover {
   opacity: 1;
   border-color: var(--border-focus);
   background: rgba(99, 102, 241, 0.06);
+  color: var(--primary);
 }
 
 /* Modals */
@@ -2072,6 +2067,7 @@ const App = {
   },
 
   // ==========================================
+  // ==========================================
   // PAGE 3: WEEKLY TIMETABLE MATRIX
   // ==========================================
   async renderTimetable(root) {
@@ -2086,43 +2082,58 @@ const App = {
     const todayDOW = new Date().getDay();
     const activeRules = scheduleDays.filter(d => studentMap.has(d.studentId));
 
-    // Dynamic hour range calculation (default 8:00 AM to 9:00 PM or bounded by classes)
-    let minHour = 8;
-    let maxHour = 21;
+    if (activeRules.length === 0) {
+      root.innerHTML = `
+        <div class="page-header">
+          <div class="page-header-titles">
+            <h1 class="page-title">Weekly Timetable</h1>
+            <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+          </div>
+        </div>
+        <div class="empty-state">
+          <div class="empty-icon">🗓️</div>
+          <div class="empty-title">No class schedules found</div>
+          <p class="empty-desc">Add students and assign weekly recurring schedules to see your synchronized timetable matrix.</p>
+          <button class="btn btn-primary" style="margin-top:16px;" onclick="App.openAddStudentModal()">+ Add Student</button>
+        </div>
+      `;
+      return;
+    }
 
+    // Extract all unique time slot intervals (e.g. 5:30 PM - 6:30 PM, 7:00 PM - 8:00 PM)
+    const slotMap = new Map();
     activeRules.forEach(r => {
-      if (r.startTime) {
-        const h = parseInt(r.startTime.split(':')[0], 10);
-        if (!isNaN(h)) {
-          if (h < minHour) minHour = Math.max(6, h);
-          if (h >= maxHour) maxHour = Math.min(23, h + 1);
-        }
+      const key = `${r.startTime}|${r.endTime}`;
+      if (!slotMap.has(key)) {
+        slotMap.set(key, { startTime: r.startTime, endTime: r.endTime });
       }
     });
 
-    const hours = [];
-    for (let h = minHour; h <= maxHour; h++) {
-      hours.push(h);
-    }
+    const uniqueSlots = Array.from(slotMap.values());
+    uniqueSlots.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '') || (a.endTime || '').localeCompare(b.endTime || ''));
 
-    // Build horizontal rows for each hour
-    const rowsHTML = hours.map(hour => {
-      const timeLabel = this.formatTime(`${String(hour).padStart(2, '0')}:00`);
+    // Build horizontal rows for each unique time slot
+    const rowsHTML = uniqueSlots.map(slot => {
+      const timeLabel = `${this.formatTime(slot.startTime)} – ${this.formatTime(slot.endTime)}`;
 
       const daysCells = [0, 1, 2, 3, 4, 5, 6].map(dow => {
-        const cellRules = activeRules.filter(r => {
-          if (r.dayOfWeek !== dow) return false;
-          const rHour = parseInt(r.startTime.split(':')[0], 10);
-          return rHour === hour;
-        });
+        // Find matching rules on this day for this EXACT time slot
+        const cellRules = activeRules.filter(r => 
+          r.dayOfWeek === dow && 
+          r.startTime === slot.startTime && 
+          r.endTime === slot.endTime
+        );
 
         const isToday = dow === todayDOW;
 
         if (cellRules.length === 0) {
           return `
             <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
-              <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${String(hour).padStart(2, '0')}:00', ${dow})" title="Click to log a class at ${timeLabel} on ${this.daysOfWeek[dow]}">
-                +
+              <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${slot.startTime}', ${dow})" title="Click to log a class at ${timeLabel} on ${this.daysOfWeek[dow]}">
+                —
               </div>
             </td>
           `;
@@ -2135,7 +2146,6 @@ const App = {
             <div class="tt-block" onclick="App.navigate('student', { id: ${student.id} })" title="Open ${this.escapeHTML(student.name)}">
               <div class="tt-block-name">${this.escapeHTML(student.name)}</div>
               <div class="tt-block-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}${sched && sched.location ? ` • 📍 ${this.escapeHTML(sched.location)}` : ''}</div>
-              <div class="tt-block-time">⏰ ${this.formatTime(r.startTime)} - ${this.formatTime(r.endTime)}</div>
             </div>
           `;
         }).join('');
@@ -2171,7 +2181,7 @@ const App = {
         <table class="timetable-matrix">
           <thead>
             <tr>
-              <th class="tt-time-head">Time</th>
+              <th class="tt-time-head">Time Slot</th>
               ${this.daysOfWeek.map((name, dow) => `
                 <th class="tt-day-head ${dow === todayDOW ? 'is-today' : ''}">
                   <div>${this.daysShort[dow]}</div>
