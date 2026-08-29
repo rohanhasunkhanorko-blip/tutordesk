@@ -2073,18 +2073,113 @@ const App = {
   // PAGE 3: WEEKLY TIMETABLE MATRIX
   // ==========================================
   async renderTimetable(root) {
-    const students = await DB.getAll('students');
-    const activeStudents = students.filter(s => s.status === 'active');
-    const scheduleDays = await DB.getAll('schedule_days');
-    const schedules = await DB.getAll('schedules');
+    try {
+      const students = await DB.getAll('students');
+      const activeStudents = students.filter(s => s.status === 'active');
+      const scheduleDays = await DB.getAll('schedule_days');
+      const schedules = await DB.getAll('schedules');
 
-    const studentMap = new Map(activeStudents.map(s => [s.id, s]));
-    const schedMap = new Map(schedules.map(sc => [sc.id, sc]));
+      const studentMap = new Map(activeStudents.map(s => [s.id, s]));
+      const schedMap = new Map(schedules.map(sc => [sc.id, sc]));
 
-    const todayDOW = new Date().getDay();
-    const activeRules = scheduleDays.filter(d => studentMap.has(d.studentId));
+      const todayDOW = new Date().getDay();
+      const activeRules = (scheduleDays || []).filter(d => d && d.studentId != null && studentMap.has(d.studentId) && d.startTime && d.endTime);
 
-    if (activeRules.length === 0) {
+      if (activeRules.length === 0) {
+        root.innerHTML = `
+          <div class="page-header">
+            <div class="page-header-titles">
+              <h1 class="page-title">Weekly Timetable</h1>
+              <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+            </div>
+          </div>
+          <div class="empty-state">
+            <div class="empty-icon">🗓️</div>
+            <div class="empty-title">No class schedules found</div>
+            <p class="empty-desc">Add students and assign weekly recurring schedules to see your synchronized timetable matrix.</p>
+            <button class="btn btn-primary" style="margin-top:16px;" onclick="App.openAddStudentModal()">+ Add Student</button>
+          </div>
+        `;
+        return;
+      }
+
+      const slotMap = new Map();
+      activeRules.forEach(r => {
+        const key = `${r.startTime}|${r.endTime}`;
+        if (!slotMap.has(key)) {
+          slotMap.set(key, { startTime: r.startTime, endTime: r.endTime });
+        }
+      });
+
+      if (slotMap.size === 0) {
+        root.innerHTML = `
+          <div class="page-header"><div class="page-header-titles"><h1 class="page-title">Weekly Timetable</h1><div class="page-desc">No valid time slots</div></div></div>
+          <div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Invalid schedule times</div><p class="empty-desc">Schedules have missing start/end times. Edit the student schedule.</p></div>
+        `;
+        return;
+      }
+
+      const uniqueSlots = Array.from(slotMap.values());
+      uniqueSlots.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '') || (a.endTime || '').localeCompare(b.endTime || ''));
+
+      const rowsHTML = uniqueSlots.map(slot => {
+        const timeLabel = `${this.formatTime(slot.startTime)} – ${this.formatTime(slot.endTime)}`;
+        const safeStart = String(slot.startTime).replace(/'/g, "\\'");
+        const safeLabel = this.escapeHTML(timeLabel);
+
+        const daysCells = [0, 1, 2, 3, 4, 5, 6].map(dow => {
+          const cellRules = activeRules.filter(r => r.dayOfWeek === dow && r.startTime === slot.startTime && r.endTime === slot.endTime);
+          const isToday = dow === todayDOW;
+
+          if (cellRules.length === 0) {
+            return `
+              <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
+                <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${safeStart}', ${dow})" title="Click to log a class at ${safeLabel} on ${this.escapeHTML(this.daysOfWeek[dow])}">
+                  —
+                </div>
+              </td>
+            `;
+          }
+
+          const cardsHTML = cellRules.map(r => {
+            const student = studentMap.get(r.studentId);
+            if (!student) return '';
+            const sched = schedMap.get(r.scheduleId);
+            const safeId = Number(student.id);
+            return `
+              <div class="tt-block" onclick="App.navigate('student', { id: ${safeId} })" title="Open ${this.escapeHTML(student.name)}">
+                <div class="tt-block-name">${this.escapeHTML(student.name)}</div>
+                <div class="tt-block-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}${sched && sched.location ? ` • 📍 ${this.escapeHTML(sched.location)}` : ''}</div>
+              </div>
+            `;
+          }).filter(Boolean).join('');
+
+          if (!cardsHTML) {
+            return `
+              <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
+                <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${safeStart}', ${dow})" title="Click to log a class at ${safeLabel} on ${this.escapeHTML(this.daysOfWeek[dow])}">—</div>
+              </td>
+            `;
+          }
+
+          return `
+            <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
+              ${cardsHTML}
+            </td>
+          `;
+        }).join('');
+
+        return `
+          <tr>
+            <td class="tt-time-cell">${this.escapeHTML(timeLabel)}</td>
+            ${daysCells}
+          </tr>
+        `;
+      }).join('');
+
       root.innerHTML = `
         <div class="page-header">
           <div class="page-header-titles">
@@ -2092,112 +2187,45 @@ const App = {
             <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
           </div>
           <div class="header-actions">
+            <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
             <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
           </div>
         </div>
-        <div class="empty-state">
-          <div class="empty-icon">🗓️</div>
-          <div class="empty-title">No class schedules found</div>
-          <p class="empty-desc">Add students and assign weekly recurring schedules to see your synchronized timetable matrix.</p>
-          <button class="btn btn-primary" style="margin-top:16px;" onclick="App.openAddStudentModal()">+ Add Student</button>
+
+        <div class="timetable-matrix-container">
+          <table class="timetable-matrix">
+            <thead>
+              <tr>
+                <th class="tt-time-head">Time Slot</th>
+                ${this.daysOfWeek.map((name, dow) => `
+                  <th class="tt-day-head ${dow === todayDOW ? 'is-today' : ''}">
+                    <div>${this.escapeHTML(this.daysShort[dow])}</div>
+                    <div style="font-size:0.68rem; font-weight:normal; color:var(--text-muted);">${activeRules.filter(r => r.dayOfWeek === dow).length} classes</div>
+                  </th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHTML}
+            </tbody>
+          </table>
         </div>
       `;
-      return;
+    } catch (err) {
+      console.error('renderTimetable failed:', err);
+      this.toast('Timetable failed to load: ' + (err && err.message ? err.message : err), 'error');
+      root.innerHTML = `
+        <div class="page-header"><div class="page-header-titles"><h1 class="page-title">Weekly Timetable</h1><div class="page-desc" style="color:var(--danger)">Failed to render — see console</div></div></div>
+        <div class="card" style="border-color:var(--danger-border); background:var(--danger-light);">
+          <div style="font-weight:700; color:var(--danger); margin-bottom:6px;">⚠️ Timetable error</div>
+          <div style="font-size:0.85rem; color:var(--text-main); word-break:break-all;">${this.escapeHTML(err && err.message ? err.message : String(err))}</div>
+          <div style="margin-top:12px; display:flex; gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="App.renderTimetable(document.getElementById('view-root'))">↻ Retry</button>
+            <button class="btn btn-primary btn-sm" onclick="App.navigate('today')">Go to Today</button>
+          </div>
+        </div>
+      `;
     }
-
-    // Extract all unique time slot intervals (e.g. 5:30 PM - 6:30 PM, 7:00 PM - 8:00 PM)
-    const slotMap = new Map();
-    activeRules.forEach(r => {
-      const key = `${r.startTime}|${r.endTime}`;
-      if (!slotMap.has(key)) {
-        slotMap.set(key, { startTime: r.startTime, endTime: r.endTime });
-      }
-    });
-
-    const uniqueSlots = Array.from(slotMap.values());
-    uniqueSlots.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '') || (a.endTime || '').localeCompare(b.endTime || ''));
-
-    // Build horizontal rows for each unique time slot
-    const rowsHTML = uniqueSlots.map(slot => {
-      const timeLabel = `${this.formatTime(slot.startTime)} – ${this.formatTime(slot.endTime)}`;
-
-      const daysCells = [0, 1, 2, 3, 4, 5, 6].map(dow => {
-        // Find matching rules on this day for this EXACT time slot
-        const cellRules = activeRules.filter(r => 
-          r.dayOfWeek === dow && 
-          r.startTime === slot.startTime && 
-          r.endTime === slot.endTime
-        );
-
-        const isToday = dow === todayDOW;
-
-        if (cellRules.length === 0) {
-          return `
-            <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
-              <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${slot.startTime}', ${dow})" title="Click to log a class at ${timeLabel} on ${this.daysOfWeek[dow]}">
-                —
-              </div>
-            </td>
-          `;
-        }
-
-        const cardsHTML = cellRules.map(r => {
-          const student = studentMap.get(r.studentId);
-          const sched = schedMap.get(r.scheduleId);
-          return `
-            <div class="tt-block" onclick="App.navigate('student', { id: ${student.id} })" title="Open ${this.escapeHTML(student.name)}">
-              <div class="tt-block-name">${this.escapeHTML(student.name)}</div>
-              <div class="tt-block-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}${sched && sched.location ? ` • 📍 ${this.escapeHTML(sched.location)}` : ''}</div>
-            </div>
-          `;
-        }).join('');
-
-        return `
-          <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
-            ${cardsHTML}
-          </td>
-        `;
-      }).join('');
-
-      return `
-        <tr>
-          <td class="tt-time-cell">${timeLabel}</td>
-          ${daysCells.join('')}
-        </tr>
-      `;
-    }).join('');
-
-    root.innerHTML = `
-      <div class="page-header">
-        <div class="page-header-titles">
-          <h1 class="page-title">Weekly Timetable</h1>
-          <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
-        </div>
-        <div class="header-actions">
-          <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
-          <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
-        </div>
-      </div>
-
-      <div class="timetable-matrix-container">
-        <table class="timetable-matrix">
-          <thead>
-            <tr>
-              <th class="tt-time-head">Time Slot</th>
-              ${this.daysOfWeek.map((name, dow) => `
-                <th class="tt-day-head ${dow === todayDOW ? 'is-today' : ''}">
-                  <div>${this.daysShort[dow]}</div>
-                  <div style="font-size:0.68rem; font-weight:normal; color:var(--text-muted);">${activeRules.filter(r => r.dayOfWeek === dow).length} classes</div>
-                </th>
-              `).join('')}
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHTML}
-          </tbody>
-        </table>
-      </div>
-    `;
   },
 
   // ==========================================
