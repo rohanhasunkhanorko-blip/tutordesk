@@ -992,6 +992,59 @@ a {
   box-shadow: var(--shadow-sm);
 }
 
+/* Monthly Fee Reminders */
+.reminder-banner {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--warning);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.reminder-banner.has-overdue {
+  border-left-color: var(--danger);
+}
+
+.reminder-banner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.reminder-banner-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 10px;
+}
+
+.reminder-card-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  gap: 8px;
+}
+
+.btn-whatsapp {
+  background: #16a34a !important;
+  color: #fff !important;
+  border-color: #15803d !important;
+}
+
+.btn-whatsapp:hover {
+  background: #15803d !important;
+}
+
 /* Timetable Matrix Grid */
 .timetable-matrix-container {
   background: var(--card-bg);
@@ -1090,6 +1143,32 @@ a {
   box-shadow: var(--shadow-sm);
 }
 
+.tt-block.status-cancelled {
+  background: var(--danger-light);
+  border-left-color: var(--danger);
+  opacity: 0.82;
+}
+
+.tt-block.status-cancelled .tt-block-name {
+  text-decoration: line-through;
+  color: var(--danger);
+}
+
+.tt-block.status-present {
+  background: var(--success-light);
+  border-left-color: var(--success);
+}
+
+.tt-block.status-absent {
+  background: var(--warning-light);
+  border-left-color: var(--warning);
+}
+
+.tt-block.is-adhoc {
+  background: rgba(168, 85, 247, 0.12);
+  border-left-color: #a855f7;
+}
+
 .tt-block-name {
   font-size: 0.84rem;
   font-weight: 700;
@@ -1106,6 +1185,41 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 2px;
+}
+
+.tt-block-badge {
+  display: inline-block;
+  font-size: 0.64rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.tt-block-badge.badge-cancelled {
+  background: var(--danger);
+  color: #fff;
+}
+
+.tt-block-badge.badge-present {
+  background: var(--success);
+  color: #fff;
+}
+
+.tt-block-badge.badge-absent {
+  background: var(--warning);
+  color: #fff;
+}
+
+.tt-block-badge.badge-pending {
+  background: var(--primary);
+  color: #fff;
+}
+
+.tt-block-badge.badge-extra {
+  background: #9333ea;
+  color: #fff;
 }
 
 .tt-empty-hover {
@@ -1129,6 +1243,134 @@ a {
   border-color: var(--border-focus);
   background: rgba(99, 102, 241, 0.06);
   color: var(--primary);
+}
+
+/* Timetable Toolbar & Day View */
+.tt-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.tt-view-switch {
+  display: flex;
+  gap: 6px;
+  background: var(--card-bg);
+  padding: 4px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.tt-day-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  max-width: 100%;
+}
+
+.tt-chip {
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.tt-chip:hover {
+  border-color: var(--primary-subtle);
+  color: var(--text-main);
+}
+
+.tt-chip.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.tt-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.tt-day-group {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease;
+}
+
+.tt-day-group.is-today {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary), var(--shadow-sm);
+}
+
+.tt-day-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.tt-day-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.tt-day-card-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  transition: all 0.15s ease;
+}
+
+.tt-day-card-item:hover {
+  border-color: var(--primary-subtle);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.tt-day-card-item.status-cancelled {
+  border-left-color: var(--danger);
+  background: var(--danger-light);
+}
+
+.tt-day-card-item.status-cancelled .tt-item-name {
+  text-decoration: line-through;
+  color: var(--danger);
+}
+
+.tt-day-card-item.is-adhoc {
+  border-left-color: #a855f7;
+}
+
+.tt-item-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.tt-item-name:hover {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 /* Modals */
@@ -1608,6 +1850,9 @@ const App = {
   daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
   daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 
+  timetableViewMode: 'matrix',
+  timetableFilterDay: 'all',
+
   async init() {
     await DB.init();
     
@@ -1731,30 +1976,304 @@ const App = {
     const todayStr = this.getTodayDateString();
     const todayDOW = new Date().getDay();
 
-    const recurringDays = await DB.getByIndex('schedule_days', 'dayOfWeek', todayDOW);
-    const existingSessions = await DB.getByIndex('class_sessions', 'date', todayStr);
+    const students = await DB.getAll('students');
+    const activeStudents = (students || []).filter(s => s && s.status === 'active');
+    const activeStudentIds = new Set(activeStudents.map(s => Number(s.id)));
+    const studentMap = new Map(activeStudents.map(s => [Number(s.id), s]));
 
-    for (const rule of recurringDays) {
-      const exists = existingSessions.some(s => s.scheduleDayId === rule.id);
-      if (!exists) {
-        const student = await DB.get('students', rule.studentId);
-        if (student && student.status === 'active') {
-          const schedule = await DB.get('schedules', rule.scheduleId);
-          await DB.add('class_sessions', {
-            studentId: rule.studentId,
-            scheduleId: rule.scheduleId,
-            scheduleDayId: rule.id,
-            date: todayStr,
-            dayOfWeek: todayDOW,
-            startTime: rule.startTime,
-            endTime: rule.endTime,
-            subjectName: schedule ? schedule.subjectName : 'General',
-            location: schedule ? schedule.location : (student.address || ''),
-            attendance: 'pending',
-            createdAt: new Date().toISOString()
-          });
+    const recurringDays = await DB.getByIndex('schedule_days', 'dayOfWeek', todayDOW);
+    const activeRecurring = (recurringDays || []).filter(r => r && activeStudentIds.has(Number(r.studentId)));
+
+    const existingSessions = await DB.getByIndex('class_sessions', 'date', todayStr);
+    const matchedSessionIds = new Set();
+
+    for (const rule of activeRecurring) {
+      const schedule = await DB.get('schedules', rule.scheduleId);
+      const student = studentMap.get(Number(rule.studentId));
+      if (!student) continue;
+
+      // Find matching session: 1) by scheduleDayId OR 2) by studentId + scheduleId
+      const matches = existingSessions.filter(s => 
+        !matchedSessionIds.has(s.id) && 
+        (s.scheduleDayId === rule.id || (Number(s.studentId) === Number(rule.studentId) && Number(s.scheduleId) === Number(rule.scheduleId)))
+      );
+
+      if (matches.length > 0) {
+        // Pick primary session (prefer one with recorded attendance), deduplicate any extra pending copies
+        let primary = matches.find(s => s.attendance && s.attendance !== 'pending') || matches[0];
+        matchedSessionIds.add(primary.id);
+
+        // Update rule details while PRESERVING attendance status (cancelled, present, absent, etc.)
+        primary.scheduleId = Number(rule.scheduleId);
+        primary.scheduleDayId = Number(rule.id);
+        primary.startTime = rule.startTime;
+        primary.endTime = rule.endTime;
+        if (schedule) primary.subjectName = schedule.subjectName;
+        if (schedule && schedule.location) primary.location = schedule.location;
+        await DB.put('class_sessions', primary);
+
+        // Clean up redundant duplicate entries created previously
+        for (const dup of matches) {
+          if (dup.id !== primary.id) {
+            await DB.delete('class_sessions', dup.id);
+          }
+        }
+      } else {
+        // Create new session for today as pending
+        const newId = await DB.add('class_sessions', {
+          studentId: Number(rule.studentId),
+          scheduleId: Number(rule.scheduleId),
+          scheduleDayId: Number(rule.id),
+          date: todayStr,
+          dayOfWeek: todayDOW,
+          startTime: rule.startTime,
+          endTime: rule.endTime,
+          subjectName: schedule ? schedule.subjectName : 'General',
+          location: schedule && schedule.location ? schedule.location : (student.address || ''),
+          attendance: 'pending',
+          createdAt: new Date().toISOString()
+        });
+        matchedSessionIds.add(newId);
+      }
+    }
+
+    // Clean up orphaned pending sessions for rules that were deleted or removed from today's schedule
+    for (const session of existingSessions) {
+      if (session.scheduleDayId && !matchedSessionIds.has(session.id) && session.attendance === 'pending') {
+        const stillActive = activeRecurring.some(r => r.id === session.scheduleDayId);
+        if (!stillActive) {
+          await DB.delete('class_sessions', session.id);
         }
       }
+    }
+  },
+
+  getCurrentPaymentMonth() {
+    if (this.currentPaymentMonth) return this.currentPaymentMonth;
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  },
+
+  getOrdinalSuffix(day) {
+    const d = Number(day) || 1;
+    if (d > 3 && d < 21) return 'th';
+    switch (d % 10) {
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
+    }
+  },
+
+  handleStartDateChange(dateVal) {
+    if (!dateVal) return;
+    const parts = dateVal.split('-');
+    if (parts.length === 3) {
+      const day = Number(parts[2]);
+      const dueSelect = document.getElementById('inp-st-dueday');
+      if (dueSelect && day >= 1 && day <= 31) {
+        dueSelect.value = String(day);
+      }
+    }
+  },
+
+  async getStudentPaymentStatus(student, targetMonthStr = '') {
+    const monthStr = targetMonthStr || this.getCurrentPaymentMonth();
+    const fee = Number(student.monthlyFee) || 0;
+    const payments = await DB.getByIndex('payments', 'studentId', Number(student.id));
+    const monthPayments = (payments || []).filter(p => p.paymentMonth === monthStr);
+    const paid = monthPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const due = Math.max(0, fee - paid);
+
+    const dueDay = Number(student.paymentDueDay) || (student.startDate ? Number(student.startDate.split('-')[2]) : 5);
+    const [year, month] = monthStr.split('-').map(Number);
+    const maxDaysInMonth = new Date(year, month, 0).getDate();
+    const actualDueDay = Math.min(dueDay, maxDaysInMonth);
+    const dueDateStr = `${year}-${String(month).padStart(2, '0')}-${String(actualDueDay).padStart(2, '0')}`;
+
+    // If student has a start date, calculate if they were enrolled in this month
+    if (student.startDate && monthStr < student.startDate.slice(0, 7)) {
+      return {
+        student,
+        fee: 0,
+        paid: 0,
+        due: 0,
+        status: 'not_enrolled',
+        statusLabel: 'Not Enrolled',
+        badgeClass: 'badge-pending',
+        dueDay: actualDueDay,
+        dueDateStr,
+        diffDays: 0,
+        isOverdue: false,
+        isDueToday: false,
+        isDueSoon: false,
+        needsReminder: false
+      };
+    }
+
+    const todayStr = this.getTodayDateString();
+    const today = new Date(todayStr + 'T00:00:00');
+    const dueDate = new Date(dueDateStr + 'T00:00:00');
+    const diffTime = today - dueDate;
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); // > 0: overdue, 0: due today, < 0: upcoming
+
+    let status = 'due';
+    let statusLabel = `Due on ${actualDueDay}${this.getOrdinalSuffix(actualDueDay)}`;
+    let badgeClass = 'badge-due';
+    let isOverdue = false;
+    let isDueToday = false;
+    let isDueSoon = false;
+
+    if (paid >= fee && fee > 0) {
+      status = 'paid';
+      statusLabel = '✓ Paid in Full';
+      badgeClass = 'badge-paid';
+    } else if (paid > 0) {
+      if (diffDays > 0) {
+        status = 'partial_overdue';
+        statusLabel = `🚨 Overdue by ${diffDays}d (${this.formatCurrency(due)} due)`;
+        badgeClass = 'badge-due';
+        isOverdue = true;
+      } else if (diffDays === 0) {
+        status = 'partial_due_today';
+        statusLabel = `⏰ Due Today! (${this.formatCurrency(due)} due)`;
+        badgeClass = 'badge-partial';
+        isDueToday = true;
+      } else {
+        status = 'partial';
+        statusLabel = `◐ Partial (Due: ${this.formatCurrency(due)})`;
+        badgeClass = 'badge-partial';
+        if (diffDays >= -3) isDueSoon = true;
+      }
+    } else {
+      if (diffDays > 0) {
+        status = 'overdue';
+        statusLabel = `🚨 Overdue by ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+        badgeClass = 'badge-due';
+        isOverdue = true;
+      } else if (diffDays === 0) {
+        status = 'due_today';
+        statusLabel = `⏰ Due Today (${actualDueDay}${this.getOrdinalSuffix(actualDueDay)})`;
+        badgeClass = 'badge-due';
+        isDueToday = true;
+      } else if (diffDays >= -3) {
+        status = 'due_soon';
+        statusLabel = `🔔 Due in ${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'}`;
+        badgeClass = 'badge-partial';
+        isDueSoon = true;
+      } else {
+        status = 'upcoming';
+        statusLabel = `📅 Due on ${actualDueDay}${this.getOrdinalSuffix(actualDueDay)}`;
+        badgeClass = 'badge-pending';
+      }
+    }
+
+    return {
+      student,
+      fee,
+      paid,
+      due,
+      status,
+      statusLabel,
+      badgeClass,
+      dueDay: actualDueDay,
+      dueDateStr,
+      diffDays,
+      isOverdue,
+      isDueToday,
+      isDueSoon,
+      needsReminder: (isOverdue || isDueToday || isDueSoon) && due > 0
+    };
+  },
+
+  async openSendReminderModal(studentId, targetMonthStr = this.currentPaymentMonth) {
+    const student = await DB.get('students', Number(studentId));
+    if (!student) return;
+
+    const paymentStatus = await this.getStudentPaymentStatus(student, targetMonthStr);
+    const monthFormatted = this.formatMonth(targetMonthStr);
+    const recipientPhone = (student.guardianPhone || student.phone || '').replace(/[^0-9+]/g, '');
+    const cleanPhone = recipientPhone.startsWith('+') ? recipientPhone.slice(1) : (recipientPhone.startsWith('0') ? '880' + recipientPhone.slice(1) : recipientPhone);
+    const dueAmount = this.formatCurrency(paymentStatus.due);
+    const dueDateFormatted = this.formatDate(paymentStatus.dueDateStr);
+
+    const defaultMsg = `Dear ${student.guardianName || student.name},\n\nThis is a polite reminder from TutorDesk regarding tuition fee for ${student.name} for ${monthFormatted}.\n\n• Monthly Fee Due: ${dueAmount}\n• Payment Due Date: ${dueDateFormatted} (${paymentStatus.dueDay}${this.getOrdinalSuffix(paymentStatus.dueDay)} of every month)\n\nPlease let me know once payment is completed. Thank you!`;
+
+    const formHTML = `
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+          <div>
+            <div style="font-weight:800; font-size:1.05rem;">${this.escapeHTML(student.name)}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">
+              👤 Guardian: ${this.escapeHTML(student.guardianName || 'None listed')} • 📞 ${this.escapeHTML(student.guardianPhone || student.phone || 'No phone')}
+            </div>
+            <div style="font-size:0.78rem; color:var(--primary); font-weight:600; margin-top:4px;">
+              📅 Monthly Due Date: ${paymentStatus.dueDay}${this.getOrdinalSuffix(paymentStatus.dueDay)} of every month
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.15rem; font-weight:800; color:var(--danger);">${dueAmount}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">${paymentStatus.statusLabel}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Reminder Message</label>
+        <textarea class="form-input" id="inp-reminder-msg" rows="7" style="font-size:0.88rem; line-height:1.45; resize:vertical;" oninput="App.updateReminderLinks()">${this.escapeHTML(defaultMsg)}</textarea>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-top:16px;">
+        ${recipientPhone ? `
+          <a href="https://wa.me/${cleanPhone}?text=${encodeURIComponent(defaultMsg)}" target="_blank" class="btn btn-whatsapp" id="btn-wa-link">
+            💬 WhatsApp
+          </a>
+          <a href="sms:${recipientPhone}?body=${encodeURIComponent(defaultMsg)}" class="btn btn-secondary" id="btn-sms-link">
+            📱 SMS
+          </a>
+          <a href="tel:${recipientPhone}" class="btn btn-secondary">
+            📞 Call
+          </a>
+        ` : `
+          <div style="grid-column: 1 / -1; color:var(--warning); font-size:0.82rem;">⚠️ Student has no phone number recorded.</div>
+        `}
+        <button class="btn btn-secondary" onclick="App.copyReminderMessage()">
+          📋 Copy Text
+        </button>
+      </div>
+    `;
+
+    this.showModal('🔔 Send Monthly Fee Reminder', formHTML, 'Done', () => {
+      this.closeModal();
+    });
+  },
+
+  updateReminderLinks() {
+    const msg = document.getElementById('inp-reminder-msg').value;
+    const btnWa = document.getElementById('btn-wa-link');
+    if (btnWa) {
+      const currentHref = btnWa.getAttribute('href');
+      const base = currentHref.split('?text=')[0];
+      btnWa.setAttribute('href', `${base}?text=${encodeURIComponent(msg)}`);
+    }
+    const btnSms = document.getElementById('btn-sms-link');
+    if (btnSms) {
+      const currentHref = btnSms.getAttribute('href');
+      const base = currentHref.split('?body=')[0];
+      btnSms.setAttribute('href', `${base}?body=${encodeURIComponent(msg)}`);
+    }
+  },
+
+  copyReminderMessage() {
+    const msg = document.getElementById('inp-reminder-msg').value;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(msg).then(() => {
+        this.toast('Reminder message copied to clipboard!', 'success');
+      }).catch(() => {
+        this.toast('Reminder message ready.');
+      });
+    } else {
+      this.toast('Reminder message ready.');
     }
   },
 
@@ -1829,6 +2348,12 @@ const App = {
     const totalCollectedMonth = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
     const totalExpectedMonth = activeStudents.reduce((sum, s) => sum + (Number(s.monthlyFee) || 0), 0);
     const totalDueMonth = Math.max(0, totalExpectedMonth - totalCollectedMonth);
+
+    // Compute monthly fee reminders for today's dashboard
+    const studentStatusPromises = activeStudents.map(s => this.getStudentPaymentStatus(s, this.currentPaymentMonth));
+    const studentStatuses = await Promise.all(studentStatusPromises);
+    const dueReminders = studentStatuses.filter(st => st.needsReminder);
+    dueReminders.sort((a, b) => (b.diffDays - a.diffDays) || (b.due - a.due));
 
     const studentMap = new Map(students.map(s => [s.id, s]));
 
@@ -1933,6 +2458,42 @@ const App = {
         </div>
       </div>
 
+      ${dueReminders.length > 0 ? `
+        <div class="reminder-banner ${dueReminders.some(r => r.isOverdue) ? 'has-overdue' : ''}">
+          <div class="reminder-banner-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.15rem;">🔔</span>
+              <div>
+                <strong style="font-size:0.92rem;">Monthly Fee Reminders (${dueReminders.length})</strong>
+                <span style="font-size:0.75rem; color:var(--text-muted); margin-left:6px;">${this.formatMonth(this.currentPaymentMonth)}</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="App.navigate('payments')">All Payments →</button>
+          </div>
+          <div class="reminder-banner-list">
+            ${dueReminders.map(r => `
+              <div class="reminder-card-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div class="st-avatar" style="width:34px; height:34px; font-size:0.8rem;">${this.getInitials(r.student.name)}</div>
+                  <div>
+                    <div style="font-weight:700; font-size:0.88rem; cursor:pointer;" onclick="App.navigate('student', { id: ${r.student.id}, tab: 'payments' })">
+                      ${this.escapeHTML(r.student.name)}
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:1px;">
+                      Due: <strong style="color:var(--danger)">${this.formatCurrency(r.due)}</strong> • <span class="badge ${r.badgeClass}" style="font-size:0.65rem; padding:1px 5px;">${r.statusLabel}</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-secondary btn-sm" onclick="App.openSendReminderModal(${r.student.id})" title="Send Reminder Message">💬 Remind</button>
+                  <button class="btn btn-primary btn-sm" onclick="App.openAddPaymentModal(${r.student.id}, '${this.currentPaymentMonth}')">+ Pay</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
       <div class="card-header" style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;">
         <div class="card-title">TODAY'S CLASSES (${sessions.length})</div>
       </div>
@@ -1951,6 +2512,8 @@ const App = {
     this.toast(`Attendance: ${session.attendance}`);
     if (this.currentPage === 'today') {
       this.renderToday(document.getElementById('view-root'));
+    } else if (this.currentPage === 'timetable') {
+      this.renderTimetable(document.getElementById('view-root'));
     } else if (this.currentStudentId) {
       this.renderStudentProfile();
     }
@@ -2069,23 +2632,58 @@ const App = {
   },
 
   // ==========================================
+  // PAGE 3: WEEKLY TIMETABLE MATRIX & DAILY VIEW
   // ==========================================
-  // PAGE 3: WEEKLY TIMETABLE MATRIX
-  // ==========================================
+  setTimetableViewMode(mode) {
+    this.timetableViewMode = mode;
+    this.renderTimetable(document.getElementById('view-root'));
+  },
+
+  setTimetableFilterDay(dow) {
+    this.timetableFilterDay = dow;
+    this.renderTimetable(document.getElementById('view-root'));
+  },
+
   async renderTimetable(root) {
     try {
+      await this.syncTodaySessions();
       const students = await DB.getAll('students');
-      const activeStudents = students.filter(s => s.status === 'active');
+      const activeStudents = (students || []).filter(s => s && s.status === 'active');
       const scheduleDays = await DB.getAll('schedule_days');
       const schedules = await DB.getAll('schedules');
+      const allSessions = await DB.getAll('class_sessions');
 
-      const studentMap = new Map(activeStudents.map(s => [s.id, s]));
-      const schedMap = new Map(schedules.map(sc => [sc.id, sc]));
+      const studentMap = new Map(activeStudents.map(s => [Number(s.id), s]));
+      const schedMap = new Map((schedules || []).map(sc => [Number(sc.id), sc]));
 
-      const todayDOW = new Date().getDay();
-      const activeRules = (scheduleDays || []).filter(d => d && d.studentId != null && studentMap.has(d.studentId) && d.startTime && d.endTime);
+      const todayObj = new Date();
+      const todayDOW = todayObj.getDay();
+      const todayStr = this.getTodayDateString();
 
-      if (activeRules.length === 0) {
+      // Compute date string for each day of current week (Sun 0 .. Sat 6)
+      const weekDates = [];
+      for (let dow = 0; dow < 7; dow++) {
+        const d = new Date(todayObj);
+        d.setDate(todayObj.getDate() - todayDOW + dow);
+        weekDates[dow] = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+
+      // Filter active recurring rules
+      const activeRules = (scheduleDays || []).filter(d => 
+        d && d.studentId != null && studentMap.has(Number(d.studentId)) && d.startTime && d.endTime
+      );
+
+      // Also gather ad-hoc/extra sessions for current week
+      const currentWeekAdHocSessions = (allSessions || []).filter(s => {
+        if (!s || !s.studentId || !studentMap.has(Number(s.studentId))) return false;
+        const sDOW = Number(s.dayOfWeek);
+        if (isNaN(sDOW) || sDOW < 0 || sDOW > 6) return false;
+        return (!s.scheduleDayId) && s.date === weekDates[sDOW];
+      });
+
+      const totalWeeklyCommitments = activeRules.length + currentWeekAdHocSessions.length;
+
+      if (totalWeeklyCommitments === 0) {
         root.innerHTML = `
           <div class="page-header">
             <div class="page-header-titles">
@@ -2093,6 +2691,7 @@ const App = {
               <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
             </div>
             <div class="header-actions">
+              <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
               <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
             </div>
           </div>
@@ -2100,12 +2699,30 @@ const App = {
             <div class="empty-icon">🗓️</div>
             <div class="empty-title">No class schedules found</div>
             <p class="empty-desc">Add students and assign weekly recurring schedules to see your synchronized timetable matrix.</p>
-            <button class="btn btn-primary" style="margin-top:16px;" onclick="App.openAddStudentModal()">+ Add Student</button>
+            <div style="display:flex; justify-content:center; gap:8px; margin-top: 16px;">
+              <button class="btn btn-primary" onclick="App.openAddStudentModal()">+ Add Student</button>
+              <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
+            </div>
           </div>
         `;
         return;
       }
 
+      // Map today's and this week's sessions by date and student/schedule for quick status lookup
+      const sessionLookup = new Map();
+      for (const s of (allSessions || [])) {
+        if (!s || !s.date) continue;
+        if (s.scheduleDayId) sessionLookup.set(`${s.date}_sd_${s.scheduleDayId}`, s);
+        if (s.studentId && s.scheduleId) sessionLookup.set(`${s.date}_sc_${s.studentId}_${s.scheduleId}`, s);
+      }
+
+      const getSessionForDayRule = (rule, dow) => {
+        const dateStr = weekDates[dow];
+        return sessionLookup.get(`${dateStr}_sd_${rule.id}`) || 
+               sessionLookup.get(`${dateStr}_sc_${rule.studentId}_${rule.scheduleId}`);
+      };
+
+      // Build unique time slots for Matrix Grid
       const slotMap = new Map();
       activeRules.forEach(r => {
         const key = `${r.startTime}|${r.endTime}`;
@@ -2113,28 +2730,30 @@ const App = {
           slotMap.set(key, { startTime: r.startTime, endTime: r.endTime });
         }
       });
-
-      if (slotMap.size === 0) {
-        root.innerHTML = `
-          <div class="page-header"><div class="page-header-titles"><h1 class="page-title">Weekly Timetable</h1><div class="page-desc">No valid time slots</div></div></div>
-          <div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Invalid schedule times</div><p class="empty-desc">Schedules have missing start/end times. Edit the student schedule.</p></div>
-        `;
-        return;
-      }
+      currentWeekAdHocSessions.forEach(s => {
+        const key = `${s.startTime}|${s.endTime}`;
+        if (!slotMap.has(key)) {
+          slotMap.set(key, { startTime: s.startTime, endTime: s.endTime });
+        }
+      });
 
       const uniqueSlots = Array.from(slotMap.values());
       uniqueSlots.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '') || (a.endTime || '').localeCompare(b.endTime || ''));
 
-      const rowsHTML = uniqueSlots.map(slot => {
+      const selectedFilter = this.timetableFilterDay !== undefined ? this.timetableFilterDay : 'all';
+
+      // --- MATRIX VIEW HTML ---
+      const matrixRowsHTML = uniqueSlots.map(slot => {
         const timeLabel = `${this.formatTime(slot.startTime)} – ${this.formatTime(slot.endTime)}`;
         const safeStart = String(slot.startTime).replace(/'/g, "\\'");
         const safeLabel = this.escapeHTML(timeLabel);
 
         const daysCells = [0, 1, 2, 3, 4, 5, 6].map(dow => {
-          const cellRules = activeRules.filter(r => r.dayOfWeek === dow && r.startTime === slot.startTime && r.endTime === slot.endTime);
           const isToday = dow === todayDOW;
+          const matchingRules = activeRules.filter(r => r.dayOfWeek === dow && r.startTime === slot.startTime && r.endTime === slot.endTime);
+          const matchingAdHoc = currentWeekAdHocSessions.filter(s => Number(s.dayOfWeek) === dow && s.startTime === slot.startTime && s.endTime === slot.endTime);
 
-          if (cellRules.length === 0) {
+          if (matchingRules.length === 0 && matchingAdHoc.length === 0) {
             return `
               <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
                 <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${safeStart}', ${dow})" title="Click to log a class at ${safeLabel} on ${this.escapeHTML(this.daysOfWeek[dow])}">
@@ -2144,30 +2763,72 @@ const App = {
             `;
           }
 
-          const cardsHTML = cellRules.map(r => {
-            const student = studentMap.get(r.studentId);
+          const recurringCards = matchingRules.map(r => {
+            const student = studentMap.get(Number(r.studentId));
             if (!student) return '';
-            const sched = schedMap.get(r.scheduleId);
+            const sched = schedMap.get(Number(r.scheduleId));
             const safeId = Number(student.id);
+            
+            const session = getSessionForDayRule(r, dow);
+            let statusClass = '';
+            let statusBadge = '';
+            
+            if (session) {
+              if (session.attendance === 'cancelled') {
+                statusClass = 'status-cancelled';
+                statusBadge = `<span class="tt-block-badge badge-cancelled">🚫 Cancelled ${isToday ? 'Today' : ''}</span>`;
+              } else if (session.attendance === 'present') {
+                statusClass = 'status-present';
+                statusBadge = `<span class="tt-block-badge badge-present">✓ Attended ${isToday ? 'Today' : ''}</span>`;
+              } else if (session.attendance === 'absent') {
+                statusClass = 'status-absent';
+                statusBadge = `<span class="tt-block-badge badge-absent">✕ Absent ${isToday ? 'Today' : ''}</span>`;
+              } else if (isToday) {
+                statusBadge = `<span class="tt-block-badge badge-pending">⏳ Today</span>`;
+              }
+            } else if (isToday) {
+              statusBadge = `<span class="tt-block-badge badge-pending">⏳ Today</span>`;
+            }
+
             return `
-              <div class="tt-block" onclick="App.navigate('student', { id: ${safeId} })" title="Open ${this.escapeHTML(student.name)}">
+              <div class="tt-block ${statusClass}" onclick="App.navigate('student', { id: ${safeId} })" title="Open ${this.escapeHTML(student.name)}">
                 <div class="tt-block-name">${this.escapeHTML(student.name)}</div>
                 <div class="tt-block-sub">${this.escapeHTML(sched ? sched.subjectName : 'Tuition')}${sched && sched.location ? ` • 📍 ${this.escapeHTML(sched.location)}` : ''}</div>
+                ${statusBadge}
               </div>
             `;
           }).filter(Boolean).join('');
 
-          if (!cardsHTML) {
+          const adhocCards = matchingAdHoc.map(s => {
+            const student = studentMap.get(Number(s.studentId));
+            if (!student) return '';
+            const safeId = Number(student.id);
+            let statusClass = 'is-adhoc';
+            let statusBadge = `<span class="tt-block-badge badge-extra">⭐ Extra Class</span>`;
+            if (s.attendance === 'cancelled') {
+              statusClass += ' status-cancelled';
+              statusBadge = `<span class="tt-block-badge badge-cancelled">🚫 Cancelled Extra</span>`;
+            } else if (s.attendance === 'present') {
+              statusClass += ' status-present';
+              statusBadge = `<span class="tt-block-badge badge-present">✓ Attended Extra</span>`;
+            } else if (s.attendance === 'absent') {
+              statusClass += ' status-absent';
+              statusBadge = `<span class="tt-block-badge badge-absent">✕ Absent Extra</span>`;
+            }
+
             return `
-              <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
-                <div class="tt-empty-hover" onclick="App.openAddAdHocSessionModal(null, '${safeStart}', ${dow})" title="Click to log a class at ${safeLabel} on ${this.escapeHTML(this.daysOfWeek[dow])}">—</div>
-              </td>
+              <div class="tt-block ${statusClass}" onclick="App.navigate('student', { id: ${safeId} })" title="Open ${this.escapeHTML(student.name)} (Extra Class)">
+                <div class="tt-block-name">${this.escapeHTML(student.name)}</div>
+                <div class="tt-block-sub">${this.escapeHTML(s.subjectName || 'Extra Tuition')}${s.location ? ` • 📍 ${this.escapeHTML(s.location)}` : ''}</div>
+                ${statusBadge}
+              </div>
             `;
-          }
+          }).filter(Boolean).join('');
 
           return `
             <td class="tt-slot-cell ${isToday ? 'is-today' : ''}">
-              ${cardsHTML}
+              ${recurringCards}
+              ${adhocCards}
             </td>
           `;
         }).join('');
@@ -2180,11 +2841,170 @@ const App = {
         `;
       }).join('');
 
+      // --- DAILY / LIST VIEW HTML ---
+      const daysToRender = selectedFilter === 'all' 
+        ? [0, 1, 2, 3, 4, 5, 6] 
+        : (selectedFilter === 'today' ? [todayDOW] : [Number(selectedFilter)]);
+
+      const listDaysHTML = daysToRender.map(dow => {
+        const isToday = dow === todayDOW;
+        const dayRules = activeRules.filter(r => r.dayOfWeek === dow);
+        const dayAdHocs = currentWeekAdHocSessions.filter(s => Number(s.dayOfWeek) === dow);
+        
+        const dayItems = [
+          ...dayRules.map(r => ({ type: 'recurring', data: r, startTime: r.startTime, endTime: r.endTime })),
+          ...dayAdHocs.map(s => ({ type: 'adhoc', data: s, startTime: s.startTime, endTime: s.endTime }))
+        ];
+        dayItems.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '') || (a.endTime || '').localeCompare(b.endTime || ''));
+
+        let itemsHTML = '';
+        if (dayItems.length === 0) {
+          itemsHTML = `
+            <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.84rem; background: var(--bg); border-radius: var(--radius); border: 1px dashed var(--border);">
+              No classes scheduled for ${this.daysOfWeek[dow]}
+              <div style="margin-top: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="App.openAddAdHocSessionModal(null, '17:00', ${dow})">+ Schedule Class</button>
+              </div>
+            </div>
+          `;
+        } else {
+          itemsHTML = dayItems.map(item => {
+            if (item.type === 'recurring') {
+              const r = item.data;
+              const student = studentMap.get(Number(r.studentId));
+              if (!student) return '';
+              const sched = schedMap.get(Number(r.scheduleId));
+              const session = getSessionForDayRule(r, dow);
+
+              let badge = '<span class="badge badge-pending">Scheduled</span>';
+              let isCancelled = false;
+              let isPresent = false;
+              let isAbsent = false;
+
+              if (session) {
+                if (session.attendance === 'cancelled') {
+                  badge = '<span class="badge badge-archived">🚫 Cancelled</span>';
+                  isCancelled = true;
+                } else if (session.attendance === 'present') {
+                  badge = '<span class="badge badge-paid">✓ Attended</span>';
+                  isPresent = true;
+                } else if (session.attendance === 'absent') {
+                  badge = '<span class="badge badge-due">✕ Absent</span>';
+                  isAbsent = true;
+                } else if (isToday) {
+                  badge = '<span class="badge badge-pending">⏳ Pending Today</span>';
+                }
+              } else if (isToday) {
+                badge = '<span class="badge badge-pending">⏳ Pending Today</span>';
+              }
+
+              return `
+                <div class="tt-day-card-item ${isCancelled ? 'status-cancelled' : ''}">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 8px;">
+                    <div>
+                      <div class="tt-item-name" onclick="App.navigate('student', { id: ${student.id} })">
+                        ${this.escapeHTML(student.name)}
+                        ${student.grade ? `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">• Grade ${this.escapeHTML(student.grade)}</span>` : ''}
+                      </div>
+                      <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">
+                        ${this.escapeHTML(sched ? sched.subjectName : 'Tuition')} ${sched && sched.location ? `• 📍 ${this.escapeHTML(sched.location)}` : ''}
+                      </div>
+                    </div>
+                    <div>${badge}</div>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; flex-wrap:wrap; gap: 8px;">
+                    <div style="font-size:0.82rem; font-weight:700; color:var(--primary);">
+                      ⏰ ${this.formatTime(r.startTime)} — ${this.formatTime(r.endTime)}
+                    </div>
+                    <div style="display:flex; gap: 6px; align-items:center;">
+                      ${session && isToday ? `
+                        <div class="att-btn-group">
+                          <button class="att-btn present ${isPresent ? 'active' : ''}" onclick="App.setAttendance(${session.id}, 'present')" title="Mark Present">✓</button>
+                          <button class="att-btn absent ${isAbsent ? 'active' : ''}" onclick="App.setAttendance(${session.id}, 'absent')" title="Mark Absent">✕</button>
+                          <button class="att-btn cancelled ${isCancelled ? 'active' : ''}" onclick="App.setAttendance(${session.id}, 'cancelled')" title="Mark Cancelled">—</button>
+                        </div>
+                      ` : ''}
+                      <button class="btn btn-secondary btn-sm" onclick="App.navigate('student', { id: ${student.id} })">Student Profile →</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            } else {
+              const s = item.data;
+              const student = studentMap.get(Number(s.studentId));
+              if (!student) return '';
+
+              let badge = '<span class="badge" style="background:rgba(168,85,247,0.15); color:#9333ea; border:1px solid rgba(168,85,247,0.3);">⭐ Extra Class</span>';
+              let isCancelled = s.attendance === 'cancelled';
+              let isPresent = s.attendance === 'present';
+              let isAbsent = s.attendance === 'absent';
+
+              if (isCancelled) badge = '<span class="badge badge-archived">🚫 Cancelled Extra</span>';
+              else if (isPresent) badge = '<span class="badge badge-paid">✓ Attended Extra</span>';
+              else if (isAbsent) badge = '<span class="badge badge-due">✕ Absent Extra</span>';
+
+              return `
+                <div class="tt-day-card-item is-adhoc ${isCancelled ? 'status-cancelled' : ''}">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 8px;">
+                    <div>
+                      <div class="tt-item-name" onclick="App.navigate('student', { id: ${student.id} })">
+                        ${this.escapeHTML(student.name)}
+                      </div>
+                      <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">
+                        ${this.escapeHTML(s.subjectName || 'Extra Tuition')} ${s.location ? `• 📍 ${this.escapeHTML(s.location)}` : ''}
+                      </div>
+                    </div>
+                    <div>${badge}</div>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; flex-wrap:wrap; gap: 8px;">
+                    <div style="font-size:0.82rem; font-weight:700; color:var(--primary);">
+                      ⏰ ${this.formatTime(s.startTime)} — ${this.formatTime(s.endTime)}
+                    </div>
+                    <div style="display:flex; gap: 6px; align-items:center;">
+                      ${isToday ? `
+                        <div class="att-btn-group">
+                          <button class="att-btn present ${isPresent ? 'active' : ''}" onclick="App.setAttendance(${s.id}, 'present')" title="Mark Present">✓</button>
+                          <button class="att-btn absent ${isAbsent ? 'active' : ''}" onclick="App.setAttendance(${s.id}, 'absent')" title="Mark Absent">✕</button>
+                          <button class="att-btn cancelled ${isCancelled ? 'active' : ''}" onclick="App.setAttendance(${s.id}, 'cancelled')" title="Mark Cancelled">—</button>
+                        </div>
+                      ` : ''}
+                      <button class="btn btn-secondary btn-sm" onclick="App.navigate('student', { id: ${student.id} })">Student Profile →</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          }).join('');
+        }
+
+        return `
+          <div class="tt-day-group ${isToday ? 'is-today' : ''}">
+            <div class="tt-day-group-header">
+              <div style="display:flex; align-items:center; gap: 8px;">
+                <span style="font-weight: 800; font-size: 1.05rem;">${this.daysOfWeek[dow]}</span>
+                ${isToday ? `<span class="badge badge-active" style="font-size:0.7rem;">Today (${this.formatDate(weekDates[dow])})</span>` : `<span style="font-size:0.75rem; color:var(--text-muted);">${this.formatDate(weekDates[dow])}</span>`}
+              </div>
+              <div style="display:flex; align-items:center; gap: 8px;">
+                <span style="font-size:0.8rem; color:var(--text-muted);">${dayItems.length} class${dayItems.length === 1 ? '' : 'es'}</span>
+                <button class="btn btn-secondary btn-sm" onclick="App.openAddAdHocSessionModal(null, '17:00', ${dow})" title="Add Class for this Day">+ Add Class</button>
+              </div>
+            </div>
+            <div class="tt-day-items-grid">
+              ${itemsHTML}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const isMatrix = (this.timetableViewMode || 'matrix') === 'matrix';
+
       root.innerHTML = `
         <div class="page-header">
           <div class="page-header-titles">
             <h1 class="page-title">Weekly Timetable</h1>
-            <div class="page-desc">Synchronized time-aligned schedule across all 7 days</div>
+            <div class="page-desc">Synchronized schedule & attendance status across all 7 days (${totalWeeklyCommitments} weekly classes)</div>
           </div>
           <div class="header-actions">
             <button class="btn btn-secondary" onclick="App.openAddAdHocSessionModal()">+ Extra Class</button>
@@ -2192,24 +3012,52 @@ const App = {
           </div>
         </div>
 
-        <div class="timetable-matrix-container">
-          <table class="timetable-matrix">
-            <thead>
-              <tr>
-                <th class="tt-time-head">Time Slot</th>
-                ${this.daysOfWeek.map((name, dow) => `
-                  <th class="tt-day-head ${dow === todayDOW ? 'is-today' : ''}">
-                    <div>${this.escapeHTML(this.daysShort[dow])}</div>
-                    <div style="font-size:0.68rem; font-weight:normal; color:var(--text-muted);">${activeRules.filter(r => r.dayOfWeek === dow).length} classes</div>
-                  </th>
-                `).join('')}
-              </tr>
-            </thead>
-            <tbody>
-              ${rowsHTML}
-            </tbody>
-          </table>
+        <!-- Controls Toolbar -->
+        <div class="tt-controls-bar">
+          <div class="tt-view-switch">
+            <button class="btn btn-sm ${isMatrix ? 'btn-primary' : 'btn-secondary'}" onclick="App.setTimetableViewMode('matrix')">
+              📊 Matrix Grid
+            </button>
+            <button class="btn btn-sm ${!isMatrix ? 'btn-primary' : 'btn-secondary'}" onclick="App.setTimetableViewMode('list')">
+              📋 Day Cards View
+            </button>
+          </div>
+
+          <div class="tt-day-chips">
+            <button class="tt-chip ${selectedFilter === 'all' ? 'active' : ''}" onclick="App.setTimetableFilterDay('all')">All Days</button>
+            <button class="tt-chip ${selectedFilter === 'today' ? 'active' : ''}" onclick="App.setTimetableFilterDay('today')">⭐ Today (${this.daysShort[todayDOW]})</button>
+            ${this.daysShort.map((short, dow) => `
+              <button class="tt-chip ${selectedFilter === dow || selectedFilter === String(dow) ? 'active' : ''}" onclick="App.setTimetableFilterDay(${dow})">${short}</button>
+            `).join('')}
+          </div>
         </div>
+
+        ${isMatrix ? `
+          <div class="timetable-matrix-container">
+            <table class="timetable-matrix">
+              <thead>
+                <tr>
+                  <th class="tt-time-head">Time Slot</th>
+                  ${this.daysOfWeek.map((name, dow) => `
+                    <th class="tt-day-head ${dow === todayDOW ? 'is-today' : ''}">
+                      <div>${this.escapeHTML(this.daysShort[dow])}</div>
+                      <div style="font-size:0.68rem; font-weight:normal; color:var(--text-muted);">
+                        ${activeRules.filter(r => r.dayOfWeek === dow).length + currentWeekAdHocSessions.filter(s => Number(s.dayOfWeek) === dow).length} classes
+                      </div>
+                    </th>
+                  `).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${matrixRowsHTML}
+              </tbody>
+            </table>
+          </div>
+        ` : `
+          <div class="tt-list-container">
+            ${listDaysHTML}
+          </div>
+        `}
       `;
     } catch (err) {
       console.error('renderTimetable failed:', err);
@@ -2380,8 +3228,11 @@ const App = {
               </div>
             </div>
             <div>
-              <div style="font-weight: 700;">Monthly Fee:</div>
+              <div style="font-weight: 700;">Monthly Fee & Pay Date:</div>
               <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-main);">${this.formatCurrency(student.monthlyFee)}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                📅 Pay Due Date: <strong>${student.paymentDueDay || 5}${this.getOrdinalSuffix(student.paymentDueDay || 5)} of every month</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -2461,26 +3312,26 @@ const App = {
     const total = topics.length;
     const progressPercent = total > 0 ? Math.round(((completed * 1.0 + inProgress * 0.5) / total) * 100) : 0;
 
-    const subjectGroups = {};
+    const bySubject = {};
     topics.forEach(t => {
-      const groupName = t.subjectName || 'General Syllabus';
-      if (!subjectGroups[groupName]) subjectGroups[groupName] = [];
-      subjectGroups[groupName].push(t);
+      const sub = t.subjectName || 'General';
+      if (!bySubject[sub]) bySubject[sub] = [];
+      bySubject[sub].push(t);
     });
 
     let groupsHTML = '';
-    if (total === 0) {
+    if (topics.length === 0) {
       groupsHTML = `
         <div class="empty-state">
-          <div class="empty-icon">📝</div>
-          <div class="empty-title">No syllabus topics added yet</div>
-          <p class="empty-desc">Break down student coursework into chapters & track individual mastery.</p>
-          <button class="btn btn-primary" style="margin-top: 14px;" onclick="App.openAddTopicModal(${student.id})">+ Add Topic</button>
+          <div class="empty-icon">📖</div>
+          <div class="empty-title">No syllabus topics added</div>
+          <p class="empty-desc">Add curriculum chapters and track topic-wise completion milestones.</p>
+          <button class="btn btn-primary" style="margin-top: 14px;" onclick="App.openAddTopicModal(${student.id})">+ Add Syllabus Topic</button>
         </div>
       `;
     } else {
-      groupsHTML = Object.keys(subjectGroups).map(subject => {
-        const groupTopics = subjectGroups[subject];
+      groupsHTML = Object.keys(bySubject).map(subject => {
+        const groupTopics = bySubject[subject];
         return `
           <div class="card" style="margin-bottom: 16px;">
             <div class="card-header">
@@ -2604,7 +3455,12 @@ const App = {
                 <div style="font-weight: 800; font-size: 1rem;">${this.formatMonth(monthStr)}</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">Expected Fee: ${this.formatCurrency(fee)}</div>
               </div>
-              <div>${statusBadge}</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                ${statusBadge}
+                ${monthTotal < fee ? `
+                  <button class="btn btn-secondary btn-sm" onclick="App.openSendReminderModal(${student.id}, '${monthStr}')" title="Send Reminder">💬 Remind</button>
+                ` : ''}
+              </div>
             </div>
 
             <div>
@@ -2630,12 +3486,26 @@ const App = {
     }
 
     container.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:8px;">
         <div>
           <h2 style="font-size: 1.15rem; font-weight: 800;">Payment History</h2>
           <div style="font-size: 0.82rem; color: var(--text-muted);">Total collected: <strong>${this.formatCurrency(totalPaid)}</strong></div>
         </div>
-        <button class="btn btn-primary" onclick="App.openAddPaymentModal(${student.id})">+ Record Payment</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" onclick="App.openSendReminderModal(${student.id}, '${this.currentPaymentMonth}')">🔔 Send Fee Reminder</button>
+          <button class="btn btn-primary" onclick="App.openAddPaymentModal(${student.id})">+ Record Payment</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px; background: var(--bg); border: 1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <div style="font-weight:700; font-size:0.92rem;">Monthly Billing Cycle</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">
+              Tuition fee is due on the <strong>${student.paymentDueDay || 5}${this.getOrdinalSuffix(student.paymentDueDay || 5)}</strong> of each month (${this.formatCurrency(student.monthlyFee)}/mo).
+            </div>
+          </div>
+        </div>
       </div>
 
       ${historyHTML}
@@ -2761,37 +3631,35 @@ const App = {
   // ==========================================
   async renderPayments(root) {
     const students = await DB.getAll('students');
-    const activeStudents = students.filter(s => s.status === 'active');
-    activeStudents.sort((a, b) => a.name.localeCompare(b.name));
+    const activeStudents = (students || []).filter(s => s && s.status === 'active');
+    activeStudents.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
-    const payments = await DB.getByIndex('payments', 'paymentMonth', this.currentPaymentMonth);
+    const breakdownPromises = activeStudents.map(student => this.getStudentPaymentStatus(student, this.currentPaymentMonth));
+    const breakdown = await Promise.all(breakdownPromises);
 
-    let totalExpected = 0;
-    let totalCollected = 0;
-
-    const breakdown = activeStudents.map(student => {
-      const fee = Number(student.monthlyFee) || 0;
-      const studentPayments = payments.filter(p => p.studentId === student.id);
-      const paid = studentPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
-      const due = Math.max(0, fee - paid);
-
-      totalExpected += fee;
-      totalCollected += paid;
-
-      let status = 'due';
-      if (paid >= fee && fee > 0) status = 'paid';
-      else if (paid > 0) status = 'partial';
-
-      return { student, fee, paid, due, status, studentPayments };
-    });
-
+    const totalExpected = breakdown.reduce((sum, item) => sum + item.fee, 0);
+    const totalCollected = breakdown.reduce((sum, item) => sum + item.paid, 0);
     const totalDue = Math.max(0, totalExpected - totalCollected);
+
+    const overdueCount = breakdown.filter(b => b.isOverdue).length;
+    const dueSoonCount = breakdown.filter(b => b.isDueToday || b.isDueSoon).length;
+    const paidCount = breakdown.filter(b => b.status === 'paid').length;
+
+    // Filter
+    const filter = this.paymentFilter || 'all';
+    const filteredBreakdown = breakdown.filter(item => {
+      if (filter === 'overdue') return item.isOverdue;
+      if (filter === 'due_soon') return item.isDueToday || item.isDueSoon;
+      if (filter === 'unpaid') return item.due > 0;
+      if (filter === 'paid') return item.status === 'paid';
+      return true;
+    });
 
     root.innerHTML = `
       <div class="page-header">
         <div class="page-header-titles">
           <h1 class="page-title">Monthly Payments</h1>
-          <div class="page-desc">Track collected tuition fees & outstanding balances</div>
+          <div class="page-desc">Track collected tuition fees, monthly pay due dates & send reminders</div>
         </div>
         <div class="header-actions">
           <button class="btn btn-secondary" onclick="App.changePaymentMonth(-1)">‹ Prev Month</button>
@@ -2816,20 +3684,36 @@ const App = {
         <div class="stat-card">
           <span class="stat-label">Outstanding Due</span>
           <span class="stat-value ${totalDue > 0 ? 'danger' : 'success'}">${this.formatCurrency(totalDue)}</span>
-          <span class="stat-sub">${breakdown.filter(b => b.status !== 'paid').length} students pending</span>
+          <span class="stat-sub">${overdueCount > 0 ? `<strong style="color:var(--danger)">${overdueCount} overdue</strong>` : `${breakdown.filter(b => b.due > 0).length} pending`}</span>
         </div>
       </div>
 
-      <div class="card-header" style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;">
-        <div class="card-title">STUDENT PAYMENT STATUS FOR ${this.formatMonth(this.currentPaymentMonth).toUpperCase()}</div>
+      <!-- Filters Toolbar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+        <div style="display: flex; gap: 6px; overflow-x: auto; max-width: 100%; padding-bottom: 2px;">
+          <button class="btn btn-sm ${filter === 'all' ? 'btn-primary' : 'btn-secondary'}" onclick="App.setPaymentFilter('all')">
+            All (${breakdown.length})
+          </button>
+          ${overdueCount > 0 ? `
+            <button class="btn btn-sm ${filter === 'overdue' ? 'btn-primary' : 'btn-secondary'}" style="${filter !== 'overdue' ? 'border-color:var(--danger); color:var(--danger)' : ''}" onclick="App.setPaymentFilter('overdue')">
+              🚨 Overdue (${overdueCount})
+            </button>
+          ` : ''}
+          <button class="btn btn-sm ${filter === 'due_soon' ? 'btn-primary' : 'btn-secondary'}" onclick="App.setPaymentFilter('due_soon')">
+            ⏰ Due Today / Soon (${dueSoonCount})
+          </button>
+          <button class="btn btn-sm ${filter === 'unpaid' ? 'btn-primary' : 'btn-secondary'}" onclick="App.setPaymentFilter('unpaid')">
+            Unpaid (${breakdown.filter(b => b.due > 0).length})
+          </button>
+          <button class="btn btn-sm ${filter === 'paid' ? 'btn-primary' : 'btn-secondary'}" onclick="App.setPaymentFilter('paid')">
+            ✓ Paid (${paidCount})
+          </button>
+        </div>
+        <span style="font-size:0.8rem; color:var(--text-muted);">${filteredBreakdown.length} students</span>
       </div>
 
       <div>
-        ${breakdown.map(item => {
-          let badge = `<span class="badge badge-due">✕ Due (${this.formatCurrency(item.due)})</span>`;
-          if (item.status === 'paid') badge = `<span class="badge badge-paid">✓ Paid</span>`;
-          else if (item.status === 'partial') badge = `<span class="badge badge-partial">◐ Partial (Due: ${this.formatCurrency(item.due)})</span>`;
-
+        ${filteredBreakdown.map(item => {
           return `
             <div class="payment-row" onclick="App.navigate('student', { id: ${item.student.id}, tab: 'payments' })">
               <div style="display: flex; align-items: center; gap: 12px;">
@@ -2839,14 +3723,22 @@ const App = {
                 <div>
                   <div style="font-weight: 700; font-size: 0.95rem;">${this.escapeHTML(item.student.name)}</div>
                   <div style="font-size: 0.78rem; color: var(--text-muted);">
-                    Monthly Fee: ${this.formatCurrency(item.fee)} • Collected: <strong style="color:var(--success)">${this.formatCurrency(item.paid)}</strong>
+                    Fee: ${this.formatCurrency(item.fee)} • Collected: <strong style="color:var(--success)">${this.formatCurrency(item.paid)}</strong>
+                    <span style="margin-left: 6px;">• 📅 Due: <strong>${item.dueDay}${this.getOrdinalSuffix(item.dueDay)}</strong> of month</span>
                   </div>
                 </div>
               </div>
 
-              <div style="display: flex; align-items: center; gap: 10px;">
-                ${badge}
-                <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); App.openAddPaymentModal(${item.student.id}, '${this.currentPaymentMonth}')">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span class="badge ${item.badgeClass}">
+                  ${item.statusLabel}
+                </span>
+                ${item.due > 0 ? `
+                  <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); App.openSendReminderModal(${item.student.id}, '${this.currentPaymentMonth}')" title="Send WhatsApp / SMS Reminder">
+                    💬 Remind
+                  </button>
+                ` : ''}
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); App.openAddPaymentModal(${item.student.id}, '${this.currentPaymentMonth}')">
                   + Pay
                 </button>
               </div>
@@ -3386,6 +4278,32 @@ const App = {
 
       <div class="form-row">
         <div class="form-group">
+          <label class="form-label">Tuition Start Date *</label>
+          <input type="date" class="form-input" id="inp-st-startdate" value="${this.getTodayDateString()}" onchange="App.handleStartDateChange(this.value)">
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+            e.g. Starting on the 23rd sets monthly pay date to 23rd.
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Payment Due Date *</label>
+          <select class="form-select" id="inp-st-dueday">
+            ${Array.from({length: 31}, (_, i) => i + 1).map(day => {
+              const defaultDay = new Date().getDate();
+              return `
+                <option value="${day}" ${day === defaultDay ? 'selected' : ''}>
+                  ${day}${this.getOrdinalSuffix(day)} of every month
+                </option>
+              `;
+            }).join('')}
+          </select>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+            Tuition fee is due on this day every month.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
           <label class="form-label">Guardian Name <span class="opt">(optional)</span></label>
           <input type="text" class="form-input" id="inp-st-gname" placeholder="e.g. Dr. Rahman">
         </div>
@@ -3412,6 +4330,8 @@ const App = {
       const grade = document.getElementById('inp-st-grade').value.trim();
       const subjectsStr = document.getElementById('inp-st-subjects').value.trim();
       const fee = Number(document.getElementById('inp-st-fee').value) || 0;
+      const startDate = document.getElementById('inp-st-startdate').value || this.getTodayDateString();
+      const paymentDueDay = Number(document.getElementById('inp-st-dueday').value) || Number(startDate.split('-')[2]) || 5;
       const guardianName = document.getElementById('inp-st-gname').value.trim();
       const guardianPhone = document.getElementById('inp-st-gphone').value.trim();
       const school = document.getElementById('inp-st-school').value.trim();
@@ -3430,6 +4350,8 @@ const App = {
         grade,
         subjects,
         monthlyFee: fee,
+        startDate,
+        paymentDueDay,
         guardianName,
         guardianPhone,
         school,
@@ -3448,6 +4370,8 @@ const App = {
   async openEditStudentModal(studentId) {
     const student = await DB.get('students', studentId);
     if (!student) return;
+
+    const currentDueDay = Number(student.paymentDueDay) || (student.startDate ? Number(student.startDate.split('-')[2]) : 5);
 
     const formHTML = `
       <div class="form-group">
@@ -3479,6 +4403,29 @@ const App = {
 
       <div class="form-row">
         <div class="form-group">
+          <label class="form-label">Tuition Start Date *</label>
+          <input type="date" class="form-input" id="inp-st-startdate" value="${student.startDate || (student.createdAt ? student.createdAt.slice(0, 10) : this.getTodayDateString())}" onchange="App.handleStartDateChange(this.value)">
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+            e.g. Starting on the 23rd sets monthly pay date to 23rd.
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Payment Due Date *</label>
+          <select class="form-select" id="inp-st-dueday">
+            ${Array.from({length: 31}, (_, i) => i + 1).map(day => `
+              <option value="${day}" ${currentDueDay === day ? 'selected' : ''}>
+                ${day}${this.getOrdinalSuffix(day)} of every month
+              </option>
+            `).join('')}
+          </select>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+            Tuition fee is due on this day every month.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
           <label class="form-label">Guardian Name</label>
           <input type="text" class="form-input" id="inp-st-gname" value="${this.escapeHTML(student.guardianName || '')}">
         </div>
@@ -3505,6 +4452,8 @@ const App = {
       student.grade = document.getElementById('inp-st-grade').value.trim();
       student.subjects = document.getElementById('inp-st-subjects').value.split(',').map(s => s.trim()).filter(Boolean);
       student.monthlyFee = Number(document.getElementById('inp-st-fee').value) || 0;
+      student.startDate = document.getElementById('inp-st-startdate').value || student.startDate || this.getTodayDateString();
+      student.paymentDueDay = Number(document.getElementById('inp-st-dueday').value) || Number(student.startDate.split('-')[2]) || 5;
       student.guardianName = document.getElementById('inp-st-gname').value.trim();
       student.guardianPhone = document.getElementById('inp-st-gphone').value.trim();
       student.school = document.getElementById('inp-st-school').value.trim();
@@ -3523,6 +4472,18 @@ const App = {
 
     student.status = student.status === 'archived' ? 'active' : 'archived';
     await DB.put('students', student);
+
+    if (student.status === 'archived') {
+      const todayStr = this.getTodayDateString();
+      const todaySessions = await DB.getByIndex('class_sessions', 'date', todayStr);
+      for (const s of todaySessions) {
+        if (Number(s.studentId) === Number(studentId) && s.attendance === 'pending') {
+          await DB.delete('class_sessions', s.id);
+        }
+      }
+    }
+
+    await this.syncTodaySessions();
     this.toast(`Student ${student.status === 'archived' ? 'archived' : 'restored'}!`);
     this.renderStudentProfile();
   },
@@ -3650,8 +4611,32 @@ const App = {
         sched.location = location;
         await DB.put('schedules', sched);
 
+        const existingDayMap = new Map(existingDays.map(d => [d.dayOfWeek, d]));
+        const savedDaysSet = new Set(daysToSave.map(d => d.dayOfWeek));
+
+        // Delete days that were unchecked
         for (const d of existingDays) {
-          await DB.delete('schedule_days', d.id);
+          if (!savedDaysSet.has(d.dayOfWeek)) {
+            await DB.delete('schedule_days', d.id);
+          }
+        }
+
+        // Add or update days preserving existing IDs
+        for (const d of daysToSave) {
+          if (existingDayMap.has(d.dayOfWeek)) {
+            const existingDay = existingDayMap.get(d.dayOfWeek);
+            existingDay.startTime = d.startTime;
+            existingDay.endTime = d.endTime;
+            await DB.put('schedule_days', existingDay);
+          } else {
+            await DB.add('schedule_days', {
+              scheduleId,
+              studentId,
+              dayOfWeek: d.dayOfWeek,
+              startTime: d.startTime,
+              endTime: d.endTime
+            });
+          }
         }
       } else {
         scheduleId = await DB.add('schedules', {
@@ -3660,16 +4645,16 @@ const App = {
           location,
           createdAt: new Date().toISOString()
         });
-      }
 
-      for (const d of daysToSave) {
-        await DB.add('schedule_days', {
-          scheduleId,
-          studentId,
-          dayOfWeek: d.dayOfWeek,
-          startTime: d.startTime,
-          endTime: d.endTime
-        });
+        for (const d of daysToSave) {
+          await DB.add('schedule_days', {
+            scheduleId,
+            studentId,
+            dayOfWeek: d.dayOfWeek,
+            startTime: d.startTime,
+            endTime: d.endTime
+          });
+        }
       }
 
       await this.syncTodaySessions();
@@ -3702,6 +4687,16 @@ const App = {
     for (const d of days) await DB.delete('schedule_days', d.id);
     await DB.delete('schedules', scheduleId);
 
+    // Remove pending session for today if tied to this deleted schedule
+    const todayStr = this.getTodayDateString();
+    const todaySessions = await DB.getByIndex('class_sessions', 'date', todayStr);
+    for (const s of todaySessions) {
+      if (Number(s.scheduleId) === Number(scheduleId) && s.attendance === 'pending') {
+        await DB.delete('class_sessions', s.id);
+      }
+    }
+
+    await this.syncTodaySessions();
     this.toast('Schedule deleted.');
     this.renderStudentProfile();
   },
